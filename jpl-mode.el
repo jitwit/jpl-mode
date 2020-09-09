@@ -34,6 +34,11 @@
   "viewmat file"
   :group 'jpl)
 
+(defcustom j-docs-help-index
+  "~/.guix-profile/share/j/addons/docs/help/index.htm"
+  "old documentation from the docs/help addon"
+  :group 'jpl)
+
 (defvar j-viewmat-buffer
   (get-buffer-create "viewmat"))
 
@@ -182,7 +187,7 @@
 (defun j-docs ()
   "only works on my guix when j-docs-help addon is present"
   (interactive)
-  (browse-url "~/.guix-profile/share/j/addons/docs/help/index.htm"))
+  (browse-url j-docs-help-index))
 
 ;;;; viewmat
 (defun j-viewmat ()
