@@ -2,11 +2,11 @@
 
 out =
 j-bin = /home/jrn/.guix-profile/bin
-
+cflags = -Wall -shared -fpic -pthread
 build : jpl-module.so
 
 jpl-module.so : jpl-module.c
-	gcc -Wall -ggdb3 -shared -fpic -L$(j-bin) -lj $< -o $@
+	gcc $(cflags) -L$(j-bin) -lj $< -o $@
 
 install :
 	mkdir -p $(out)

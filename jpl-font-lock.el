@@ -1,51 +1,56 @@
+(defgroup jpl-font-lock nil
+  "jpl-mode"
+  :group 'jpl
+  :prefix "j-font-lock-")
+
 (defvar j-verb-face
   (defface j-verb-face
     `((t (:foreground "#117EFF")))
   "I."
-  :group 'jpl))
+  :group 'jpl-font-lock))
 
 (defvar j-adverb-face
   (defface j-adverb-face
     `((t (:foreground "#FF9C55")))
   "&"
-  :group 'jpl))
+  :group 'jpl-font-lock))
 
 (defvar j-conjunction-face
   (defface j-conjunction-face
     `((t (:foreground "#FF0D4D")))
   "^:"
-  :group 'jpl))
+  :group 'jpl-font-lock))
 
 (defvar j-noun-face
   (defface j-noun-face
     `((t (:foreground "#BF456E")))
   "a."
-  :group 'jpl))
+  :group 'jpl-font-lock))
 
 (defvar j-is-face
   (defface j-is-face
     `((t (:foreground "#004839")))
     ; "#2F789F"
   "avg =. +/ % #"
-  :group 'jpl))
+  :group 'jpl-font-lock))
 
 (defvar j-copula-face
   (defface j-copula-face
     `((t (:foreground "#808080")))
   "=."
-  :group 'jpl))
+  :group 'jpl-font-lock))
 
 (defvar j-string-face
   (defface j-string-face
-    `((t (:foreground "#000000")))
+    `((t (:foreground "#484848")))
     "''''"
-    :group 'jpl))
+    :group 'jpl-font-lock))
 
 (defvar j-control-face
   (defface j-control-face
     `((t (:foreground "#484848"))) ; 21184E
     "whilst."
-    :group 'jpl))
+    :group 'jpl-font-lock))
 
 ;; based on: https://wjmn.github.io/posts/j-can-look-like-apl/
 (defvar j->apl
@@ -106,25 +111,26 @@
 
 (defvar j-syntax-table
   (let ((table (make-syntax-table)))
-    (modify-syntax-entry ?\" "_"   table)
-    (modify-syntax-entry ?\= "-"   table)
-    (modify-syntax-entry ?\( "-"   table)
-    (modify-syntax-entry ?\) "-"   table)
-    (modify-syntax-entry ?\' "."   table)
-    (modify-syntax-entry ?\, "-"   table)
-    (modify-syntax-entry ?\. "-"   table)
-    (modify-syntax-entry ?\# "-"   table)
-    (modify-syntax-entry ?\& "-"   table)
-    (modify-syntax-entry ?\/ "-"   table)
-    (modify-syntax-entry ?\\ "-"   table)
-    (modify-syntax-entry ?\~ "-"   table)
-    (modify-syntax-entry ?\: "-"   table)
-    (modify-syntax-entry ?\- "-"   table)
-    (modify-syntax-entry ?\@ "-"   table)
-    (modify-syntax-entry ?\{ "-"   table)
-    (modify-syntax-entry ?\} "-"   table)
-    (modify-syntax-entry ?\n "-"   table)
-    (modify-syntax-entry ?\r "-"   table)
+    (modify-syntax-entry ?\" "_" table)
+    (modify-syntax-entry ?\= "-" table)
+    (modify-syntax-entry ?\( "-" table)
+    (modify-syntax-entry ?\) "-" table)
+    (modify-syntax-entry ?\' "." table)
+    (modify-syntax-entry ?\, "-" table)
+    (modify-syntax-entry ?\. "-" table)
+    (modify-syntax-entry ?\# "-" table)
+    (modify-syntax-entry ?\& "-" table)
+    (modify-syntax-entry ?\/ "-" table)
+    (modify-syntax-entry ?\\ "-" table)
+    (modify-syntax-entry ?\~ "-" table)
+    (modify-syntax-entry ?\: "-" table)
+    (modify-syntax-entry ?\- "-" table)
+    (modify-syntax-entry ?\@ "-" table)
+    (modify-syntax-entry ?\$ "-" table)
+    (modify-syntax-entry ?\{ "-" table)
+    (modify-syntax-entry ?\} "-" table)
+    (modify-syntax-entry ?\n "-" table)
+    (modify-syntax-entry ?\r "-" table)
     table)
   "Syntax table for j-mode")
 
