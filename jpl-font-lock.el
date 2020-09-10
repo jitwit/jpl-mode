@@ -92,6 +92,9 @@
     ("\*"       . ?×))
   "Table to translate J to classic APL characters with pretty-symbols")
 
+;; NB! actual J punctuation chars: ()' and comments NB.
+;; verbs/nouns are coupled on surface
+;; adverbs/conjunctions are _modifiers_ creating _derived entities_
 (defvar j-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\" "_"   table)
@@ -129,12 +132,12 @@
 (defvar j-verb-2
   '("0:" "1:" "2:" "3:" "4:" "5:" "6:" "7:" "8:" "9:" "_:"
     "x:" "u:" "s:" "r." "q:" "p:" "p." "o." "L." "j." "I." "i:" "i." "E." "e."
-    "C." "A." "?." "\":" "\"." "}:" "}." "{:" "{." "[:" "/:" "\\:" "#:" "#." ";:" ",:"
+    "C." "A." "?." "\":" "}:" "}." "{:" "{." "[:" "/:" "\\:" "#:" "#." ";:" ",:"
     ",." "|:" "|." "~:" "~." "$:" "$." "^." "%:" "%." "-:" "-." "*:" "*."  "+:"
     "+." ">:" ">." "<:" "<."))
 (defvar j-adv-2
   '(;; sadly, "t:" "t."
-    "M." "f." "b." "/."))
+    "M." "f." "b." "/." "\\."))
 (defvar j-conj-2
   '(; sadly: "T." "D:" "D." "d."
     "S:" "L:" "H." 
