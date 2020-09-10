@@ -35,6 +35,18 @@
   "=."
   :group 'jpl))
 
+(defvar j-string-face
+  (defface j-string-face
+    `((t (:foreground "#000000")))
+    "''''"
+    :group 'jpl))
+
+(defvar j-control-face
+  (defface j-control-face
+    `((t (:foreground "#484848"))) ; 21184E
+    "''''"
+    :group 'jpl))
+
 ;; based on: https://wjmn.github.io/posts/j-can-look-like-apl/
 (defvar j->apl
   '(("/\."      . ?⌸)
@@ -92,27 +104,24 @@
     ("\*"       . ?×))
   "Table to translate J to classic APL characters with pretty-symbols")
 
-;; NB! actual J punctuation chars: ()' and comments NB.
-;; verbs/nouns are coupled on surface
-;; adverbs/conjunctions are _modifiers_ creating _derived entities_
 (defvar j-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\" "_"   table)
-    ;; helped get x=. blah to fire
-    (modify-syntax-entry ?\= "."   table) ; for prettify-symbols mode
-    (modify-syntax-entry ?\& "."   table) ; for prettify-symbols mode
-    (modify-syntax-entry ?\" "."   table) ; for prettify-symbols mode
-    (modify-syntax-entry ?\: "."   table) ; for prettify-symbols mode
-
-    ;; not helping with :~ or ~, to get ~ to fire
-;;     (modify-syntax-entry ?\, "_"   table) ; for prettify-symbols mode
-;;     (modify-syntax-entry ?\# "_"   table) ; for prettify-symbols mode
-;;     (modify-syntax-entry ?\~ "_"   table) ; for prettify-symbols mode
-;;     (modify-syntax-entry ?\) "_"   table) ; for prettify-symbols mode
-;;     (modify-syntax-entry ?\( "_"   table) ; for prettify-symbols mode
-    
-    (modify-syntax-entry ?\n ">"   table)
-    (modify-syntax-entry ?\r ">"   table)
+    (modify-syntax-entry ?\= "-"   table)
+    (modify-syntax-entry ?\( "-"   table)
+    (modify-syntax-entry ?\) "-"   table)
+    (modify-syntax-entry ?\' "."   table)
+    (modify-syntax-entry ?\, "-"   table)
+    (modify-syntax-entry ?\. "-"   table)
+    (modify-syntax-entry ?\# "-"   table)
+    (modify-syntax-entry ?\& "-"   table)
+    (modify-syntax-entry ?\/ "-"   table)
+    (modify-syntax-entry ?\\ "-"   table)
+    (modify-syntax-entry ?\~ "-"   table)
+    (modify-syntax-entry ?\: "-"   table)
+    (modify-syntax-entry ?\- "-"   table)
+    (modify-syntax-entry ?\n "."   table)
+    (modify-syntax-entry ?\r "."   table)
     table)
   "Syntax table for j-mode")
 
@@ -180,11 +189,11 @@
      (,(rx (submatch-n 1 (or "for_" "goto_" "label_"))
 	   (submatch-n 2 (+ alpha))
 	   (submatch-n 3 "."))
-      (1 font-lock-keyword-face)
+      (1 j-control-face)
       (2 j-is-face)
-      (3 font-lock-keyword-face))
-     (,(rx "'" (* (not "'")) "'")     . font-lock-string-face)
-     (,(rx (eval `(or ,@j-controls))) . font-lock-keyword-face)
+      (3 j-control-face))
+     (,(rx "'" (* (not "'")) "'")     . j-string-face)
+     (,(rx (eval `(or ,@j-controls))) . j-control-face)
      (,(rx (eval `(or ,@j-conj-3)))   . j-conjunction-face)
      (,(rx (eval `(or ,@j-verb-3)))   . j-verb-face)
      (,(rx (eval `(or ,@j-noun-2)))   . j-noun-face)
