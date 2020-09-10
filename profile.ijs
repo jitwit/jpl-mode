@@ -1,7 +1,6 @@
 NB. J profile
 jpathsep_z_=: '/'&(('\' I.@:= ])})
-bin =. BINPATH_z_ NB. customizable through jpl-mode.el
-home=. 2!:5'HOME'
+bin =. BINPATH_z_ =. '~/.guix-profile/bin',~home=. 2!:5'HOME'
 install=. home,'/.guix-profile/share/j'
 'addons system tools'=. install&, &.> '/addons';'/system';'/tools'
 user=. home,userx=. '/j902-user'

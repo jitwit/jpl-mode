@@ -7,7 +7,7 @@
 (require 'browse-url)
 (require 'filenotify)
 
-;;;; groups
+;;;; group
 (defgroup jpl-mode nil
   "A mode for J"
   :group 'languages
@@ -22,11 +22,6 @@
 (defcustom j-profile-ijs
   "~/code/jpl-mode/profile.ijs"
   "your J initialization script"
-  :group 'jpl)
-
-(defcustom j-binpath
-  "~/.guix-profile/bin"
-  "the directory J expects to find libj.so, jconsole, and such"
   :group 'jpl)
 
 (defcustom j-viewmat-png
@@ -45,8 +40,7 @@
 (defun j-new ()
   "create and initialize a J engine"
   (let ((J (j-engine)))
-    (j-do J "ARGV_z_ =: 'emacs'")
-    (j-do J (concat "BINPATH_z_ =: '" (expand-file-name j-binpath) "'"))
+    (j-do J "ARGV_z_ =: <'emacs'")
     (j-do J (concat "0!:0 < '" (expand-file-name j-profile-ijs) "'"))
     ;; NB. suppress viewmat from trying to open file itself
     (j-do J "VISIBLE_jviewmat_ =: 0 [ require 'viewmat plot'")
