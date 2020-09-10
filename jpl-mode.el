@@ -126,7 +126,7 @@
     (cond (J
 	   (let ((t0 (current-time)))
 	     (j-over-region J (point-at-bol) (point-at-eol))
-	     (princ (format "[jpl] dt : %f"
+	     (princ (format "[jpl] dt : %fs"
 			    (float-time (time-subtract (current-time) t0))))))
 	  (t (j-create-instance where) (j-over-line)))))
 
@@ -138,7 +138,7 @@
     (cond (J
 	   (let ((t0 (current-time)))
 	     (j-over-region* J (point-min) (point-max))
-	     (princ (format "[jpl] dt : %f"
+	     (princ (format "[jpl] dt : %fs"
 			    (float-time (time-subtract (current-time) t0))))))
 	  (t (j-create-instance where) (j-over-buffer)))))
 

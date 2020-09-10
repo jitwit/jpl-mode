@@ -44,7 +44,7 @@
 (defvar j-control-face
   (defface j-control-face
     `((t (:foreground "#484848"))) ; 21184E
-    "''''"
+    "whilst."
     :group 'jpl))
 
 ;; based on: https://wjmn.github.io/posts/j-can-look-like-apl/
@@ -120,8 +120,11 @@
     (modify-syntax-entry ?\~ "-"   table)
     (modify-syntax-entry ?\: "-"   table)
     (modify-syntax-entry ?\- "-"   table)
-    (modify-syntax-entry ?\n "."   table)
-    (modify-syntax-entry ?\r "."   table)
+    (modify-syntax-entry ?\@ "-"   table)
+    (modify-syntax-entry ?\{ "-"   table)
+    (modify-syntax-entry ?\} "-"   table)
+    (modify-syntax-entry ?\n "-"   table)
+    (modify-syntax-entry ?\r "-"   table)
     table)
   "Syntax table for j-mode")
 
@@ -176,7 +179,6 @@
   `((
      ;; one day: multiline strings and inline explicit defs
      (,(rx "NB." (* not-newline))     . font-lock-comment-face)
-
      (,(rx (or (submatch-n 1 (eval j-identifier))
 	       (seq "'" (submatch-n 1
 				    (seq (eval j-identifier)
@@ -202,8 +204,7 @@
      (,(rx (eval `(or ,@j-verb-2)))   . j-verb-face)
      (,(rx (eval `(or ,@j-verb-1)))   . j-verb-face)
      (,(rx (eval `(or ,@j-conj-1)))   . j-conjunction-face)
-     (,(rx (eval `(or ,@j-adv-1)))    . j-adverb-face)
-     ))
+     (,(rx (eval `(or ,@j-adv-1)))    . j-adverb-face)))
   "J Mode font lock keys words")
 
 (provide 'jpl-font-lock)
