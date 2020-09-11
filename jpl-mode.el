@@ -40,10 +40,7 @@
 (defun j-new ()
   "create and initialize a J engine"
   (let ((J (j-engine)))
-    (j-do J "ARGV_z_ =: <'emacs'")
     (j-do J (concat "0!:0 < '" (expand-file-name j-profile-ijs) "'"))
-    ;; NB. suppress viewmat from trying to open file itself
-    (j-do J "VISIBLE_jviewmat_ =: 0 [ require 'viewmat plot'")
     J))
 
 (defvar jpl-place->j

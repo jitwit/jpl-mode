@@ -20,6 +20,9 @@ static C* estring(EE* e, EV s)
 EFUN(jedo)
 { J j = e->get_user_ptr(e,a[0]); C* s = estring(e,a[1]);
   int r = jdo(j,s); free(s); R e->make_integer(e,r); }
+// need to respond to C-g
+// static void sigint(int k){**adadbreak+=1;signal(SIGINT,sigint);}
+// adadbreak=(char**)jt; // first address in jt is address of breakdata
 EFUN(jeini) { R e->make_user_ptr(e,(V*)jfree,jinit()); }
 EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a+",stdout);free(o);

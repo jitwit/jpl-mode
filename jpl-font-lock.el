@@ -41,8 +41,8 @@
   :group 'jpl-font-lock))
 
 (defvar j-string-face
-  (defface j-string-face
-    `((t (:foreground "#484848")))
+  (defface j-string-face ;; #14816F
+    `((t (:foreground "#47AC9A"))) ;; "#484848"
     "''''"
     :group 'jpl-font-lock))
 
@@ -200,7 +200,8 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
-     (,(rx "'" (* (not "'")) "'")     . j-string-face)
+     (,(rx "'" (* (not "'")) "'")     . font-lock-string-face ;; j-string-face
+      )
      (,(rx (eval `(or ,@j-controls))) . j-control-face)
      (,(rx (eval `(or ,@j-conj-3)))   . j-conjunction-face)
      (,(rx (eval `(or ,@j-verb-3)))   . j-verb-face)
