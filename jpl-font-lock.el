@@ -129,6 +129,8 @@
     (modify-syntax-entry ?\$ "-" table)
     (modify-syntax-entry ?\{ "-" table)
     (modify-syntax-entry ?\} "-" table)
+    (modify-syntax-entry ?\< "-" table)
+    (modify-syntax-entry ?\> "-" table)
     (modify-syntax-entry ?\n "-" table)
     (modify-syntax-entry ?\r "-" table)
     table)

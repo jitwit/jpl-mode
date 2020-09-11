@@ -62,28 +62,32 @@
 		 (out . ,out))
 	       jpl-place->j))))
 
-(defun j-eval (J sentence)
-  "have `J' interpret a single `sentence'"
+(defun j-eval (J speech &optional foreign-verb)
+  "have `J' interpret given `speech', using a given
+`foreign-verb' such as 0!:0 or 0!:1 on a temporary file
+containing the `speech' or as a single sentence if `nil'."
+  (unless (member foreign-verb '("0!:0" "0!:1" "0!:2" "0!:10" "0!:11"
+				 "0!:100" "0!:101" "0!:110" "0!:111"
+				 "0!:2" "0!:3")))
   (let ((j-out (make-temp-file "jpl/")))
     (j-smx J j-out)
-    (j-do J sentence)
-    (insert-file-contents j-out)))
-
-(defun j-eval* (J sentences)
-  "have `J' interpret several `sentences' through 0!:0"
-  (let ((j-in  (make-temp-file "jpl/" nil nil sentences))
-	(j-out (make-temp-file "jpl/")))
-    (j-smx J j-out)
-    (j-do J (concat "0!:0 < '" j-in "'"))
-    (insert-file-contents j-out)))
+    (j-do J
+	  (if (null foreign-verb)
+	      speech
+	    (concat foreign-verb
+		    " < '"
+		    (make-temp-file "jpl/" nil nil speech)
+		    "'")))
+    (with-temp-buffer
+      (insert-file-contents j-out)
+      (buffer-string))))
 
 (defun j-over-mini (sentence)
   "execute J sentence from mini buffer with global J instance"
   (interactive "sJ: ")
-  (let ((J (gethash "~" jpl-place->j)))
-    (with-temp-buffer
-      (j-eval (cdr (assq 'engine J)) sentence)
-      (display-message-or-buffer (buffer-string)))))
+  (display-message-or-buffer
+   (j-eval (cdr (assq 'engine (gethash "~" jpl-place->j)))
+	   sentence)))
 
 (defun j-over-region (J a b)
   "Send region to J"
@@ -96,7 +100,7 @@
       (j-do engine (concat "1!:44 '" default-directory "'"))
       (pop-to-buffer out)
       (goto-char (point-max))
-      (j-eval engine sentences)
+      (insert (j-eval engine sentences))
       (goto-char (point-max))
       (other-window 1))))
 
@@ -111,8 +115,7 @@
       (j-do engine (concat "1!:44 '" default-directory "'"))
       (pop-to-buffer out)
       (goto-char (point-max))
-      (j-eval* engine sentences)
-      (goto-char (point-max))
+      (insert (j-eval engine sentences "0!:0"))
       (other-window 1))))
 
 (defun j-over-line ()
