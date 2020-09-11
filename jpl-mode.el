@@ -68,7 +68,8 @@
 containing the `speech' or as a single sentence if `nil'."
   (unless (member foreign-verb '("0!:0" "0!:1" "0!:2" "0!:10" "0!:11"
 				 "0!:100" "0!:101" "0!:110" "0!:111"
-				 "0!:2" "0!:3")))
+				 "0!:2" "0!:3" nil))
+    (error "j-eval invalid `foreign-verb'" foreign-verb))
   (let ((j-out (make-temp-file "jpl/")))
     (j-smx J j-out)
     (j-do J
@@ -89,58 +90,37 @@ containing the `speech' or as a single sentence if `nil'."
    (j-eval (cdr (assq 'engine (gethash "~" jpl-place->j)))
 	   sentence)))
 
-(defun j-over-region (J a b)
+(defun j-over-region (a b)
   "Send region to J"
   (interactive "r")
-  (let ((engine (cdr (assq 'engine J)))
-	(out (cdr (assq 'out J))))
-    ;; todo get-buffer-create doesn't make a new one
-    ;; (unless (buffer-live-p out) (setq out (get-buffer out)))
-    (let ((sentences (buffer-substring-no-properties a b)))
-      (j-do engine (concat "1!:44 '" default-directory "'"))
-      (pop-to-buffer out)
-      (goto-char (point-max))
-      (insert (j-eval engine sentences))
-      (goto-char (point-max))
-      (other-window 1))))
-
-(defun j-over-region* (J a b)
-  "Send region to J"
-  (interactive "r")
-  (let ((engine (cdr (assq 'engine J)))
-	(out (cdr (assq 'out J))))
-    ;; todo get-buffer-create doesn't make a new one
-    ;; (unless (buffer-live-p out) (setq out (get-buffer out)))
-    (let ((sentences (buffer-substring-no-properties a b)))
-      (j-do engine (concat "1!:44 '" default-directory "'"))
-      (pop-to-buffer out)
-      (goto-char (point-max))
-      (insert (j-eval engine sentences "0!:0"))
-      (other-window 1))))
+  (let* ((where (buffer-file-name))
+	 (J (gethash where jpl-place->j))
+	 (engine (cdr (assq 'engine J)))
+	 (out (cdr (assq 'out J))))
+    (cond (J
+	   (let ((sentences (buffer-substring-no-properties a b)))
+	     (j-do engine (concat "1!:44 '" default-directory "'"))
+	     (pop-to-buffer out)
+	     (goto-char (point-max))
+	     (insert (j-eval engine sentences "0!:1"))
+	     (other-window 1)))
+	  (t (j-create-instance where) (j-over-region a b)))))
 
 (defun j-over-line ()
   "Send line to J"
   (interactive)
-  (let* ((where (buffer-file-name))
-	 (J (gethash where jpl-place->j)))
-    (cond (J
-	   (let ((t0 (current-time)))
-	     (j-over-region J (point-at-bol) (point-at-eol))
-	     (princ (format "[jpl] dt : %fs"
-			    (float-time (time-subtract (current-time) t0))))))
-	  (t (j-create-instance where) (j-over-line)))))
+  (let ((t0 (current-time)))
+    (j-over-region (point-at-bol) (point-at-eol))
+    (princ (format "[jpl] dt : %fs"
+		   (float-time (time-subtract (current-time) t0))))))
 
 (defun j-over-buffer ()
   "Send buffer to J"
   (interactive)
-  (let* ((where (buffer-file-name))
-	 (J (gethash where jpl-place->j)))
-    (cond (J
-	   (let ((t0 (current-time)))
-	     (j-over-region* J (point-min) (point-max))
-	     (princ (format "[jpl] dt : %fs"
-			    (float-time (time-subtract (current-time) t0))))))
-	  (t (j-create-instance where) (j-over-buffer)))))
+  (let ((t0 (current-time)))
+    (j-over-region (point-min) (point-max))
+    (princ (format "[jpl] dt : %fs"
+		   (float-time (time-subtract (current-time) t0))))))
 
 ;;;; documentation
 (defun j-find-thing (thing)
