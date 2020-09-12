@@ -79,8 +79,7 @@ containing the `speech' or as a single sentence if `nil'."
 		    " < '"
 		    (make-temp-file "jpl/" nil nil speech)
 		    "'")))
-    (with-temp-buffer
-      (insert-file-contents j-out)
+    (with-current-buffer j-out
       (buffer-string))))
 
 (defun j-over-mini (sentence)
