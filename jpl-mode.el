@@ -70,17 +70,13 @@ containing the `speech' or as a single sentence if `nil'."
 				 "0!:100" "0!:101" "0!:110" "0!:111"
 				 "0!:2" "0!:3" nil))
     (error "j-eval invalid `foreign-verb'" foreign-verb))
-  (let ((j-out (make-temp-file "jpl/")))
-    (j-smx J j-out)
-    (j-do J
-	  (if (null foreign-verb)
-	      speech
-	    (concat foreign-verb
-		    " < '"
-		    (make-temp-file "jpl/" nil nil speech)
-		    "'")))
-    (with-current-buffer j-out
-      (buffer-string))))
+  (j-dor J
+	 (if (null foreign-verb)
+	     speech
+	   (concat foreign-verb
+		   " < '"
+		   (make-temp-file "jpl/" nil nil speech)
+		   "'"))))
 
 (defun j-over-mini (sentence)
   "execute J sentence from mini buffer with global J instance"
