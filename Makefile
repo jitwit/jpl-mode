@@ -2,7 +2,7 @@
 
 out =
 j-bin = /home/jrn/.guix-profile/bin
-cflags = -Wall -shared -fpic -pthread
+cflags = -Wall -shared -fpic
 build : jpl-module.so
 
 jpl-module.so : jpl-module.c

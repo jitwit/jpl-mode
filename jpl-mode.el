@@ -70,20 +70,23 @@ containing the `speech' or as a single sentence if `nil'."
 				 "0!:100" "0!:101" "0!:110" "0!:111"
 				 "0!:2" "0!:3" nil))
     (error "j-eval invalid `foreign-verb'" foreign-verb))
-  (j-dor J
-	 (if (null foreign-verb)
-	     speech
-	   (concat foreign-verb
-		   " < '"
-		   (make-temp-file "jpl/" nil nil speech)
-		   "'"))))
+  (j-do J
+	(if (null foreign-verb)
+	    speech
+	  (concat foreign-verb
+		  " < '"
+		  (make-temp-file "jpl/" nil nil speech)
+		  "'"))))
 
 (defun j-over-mini (sentence)
   "execute J sentence from mini buffer with global J instance"
   (interactive "sJ: ")
-  (display-message-or-buffer
-   (j-eval (cdr (assq 'engine (gethash "~" jpl-place->j)))
-	   sentence)))
+  (let ((vm0 (file-attributes j-viewmat-png)))
+    (display-message-or-buffer
+     (j-eval (cdr (assq 'engine (gethash "~" jpl-place->j)))
+	     sentence))
+    (unless (equal vm0 (file-attributes j-viewmat-png))
+      (j-viewmat))))
 
 (defun j-over-region (a b)
   "Send region to J"
@@ -91,13 +94,16 @@ containing the `speech' or as a single sentence if `nil'."
   (let* ((where (buffer-file-name))
 	 (J (gethash where jpl-place->j))
 	 (engine (cdr (assq 'engine J)))
-	 (out (cdr (assq 'out J))))
+	 (out (assq 'out J))
+	 (vm0 (file-attributes j-viewmat-png)))
     (cond (J
 	   (let ((sentences (buffer-substring-no-properties a b)))
 	     (j-do engine (concat "1!:44 '" default-directory "'"))
-	     (pop-to-buffer out)
+	     (pop-to-buffer (cdr out))
 	     (goto-char (point-max))
 	     (insert (j-eval engine sentences "0!:1"))
+	     (unless (equal vm0 (file-attributes j-viewmat-png))
+	       (j-viewmat))
 	     (other-window 1)))
 	  (t (j-create-instance where) (j-over-region a b)))))
 
@@ -163,7 +169,8 @@ containing the `speech' or as a single sentence if `nil'."
   "open and view a viewmat image"
   (when (buffer-live-p j-viewmat-buffer)
     (kill-buffer j-viewmat-buffer))
-  (setq j-viewmat-buffer (get-buffer-create "viewmat"))
+  (setq j-viewmat-buffer
+	(get-buffer-create "viewmat"))
   (with-current-buffer j-viewmat-buffer
     (insert-image-file j-viewmat-png))
   (view-buffer j-viewmat-buffer))
@@ -196,15 +203,10 @@ containing the `speech' or as a single sentence if `nil'."
   (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . jpl-mode))
   (global-set-key (kbd "M-j") 'j-over-mini)
   (j-create-instance "~"))
-  ;; too shoddy for now
-  ;; (file-notify-add-watch jpl-viewmat-png
-  ;; 		       '(change)
-  ;; 		       (lambda (e)
-  ;; 			 ;; (princ e)
-  ;; 			 (j-viewmat)))
 
 (defvar WWJ
   (cdr (assq 'engine (gethash "~" jpl-place->j)))
   "world wide J")
 
 (provide 'jpl-mode)
+

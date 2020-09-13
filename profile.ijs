@@ -14,4 +14,4 @@ if. -.#1!:0 }:a=.y,'/' do. for_n. I. a='/' do. 1!:5 :: [ <n{.a end. end.
 md &.> (user,'/projects');break;config;snap;temp NB. should handle in emacs?
 0!:0 <jpathsep (4!:55 (;:'userx ids md'), ids)]system,'/util/boot.ijs'
 require 'viewmat plot stats/bonsai'
-NB. VISIBLE_jviewmat_ =: 0 NB. suppress viewmat from trying to open file itself
+VISIBLE_jviewmat_ =: 0 NB. suppress viewmat from trying to open file itself
