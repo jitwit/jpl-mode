@@ -40,7 +40,7 @@
 (defun j-new ()
   "create and initialize a J engine"
   (let ((J (j-engine)))
-    (j-do J (concat "0!:0 < '" (expand-file-name j-profile-ijs) "'"))
+    (j-getr J (concat "0!:0 < '" (expand-file-name j-profile-ijs) "'"))
     J))
 
 (defvar jpl-place->j
@@ -55,7 +55,7 @@
   (unless (gethash where jpl-place->j)
     (let ((J (j-new))
 	  (out (get-buffer-create (concat "J <" where ">"))))
-      (j-do J (concat "1!:44 '" (expand-file-name where) "'"))
+      (j-getr J (concat "1!:44 '" (expand-file-name where) "'"))
       (puthash where
 	       `((engine . ,J)
 		 (where . ,where)
@@ -70,13 +70,13 @@ containing the `speech' or as a single sentence if `nil'."
 				 "0!:100" "0!:101" "0!:110" "0!:111"
 				 "0!:2" "0!:3" nil))
     (error "j-eval invalid `foreign-verb'" foreign-verb))
-  (j-do J
-	(if (null foreign-verb)
-	    speech
-	  (concat foreign-verb
-		  " < '"
-		  (make-temp-file "jpl/" nil nil speech)
-		  "'"))))
+  (j-getr J
+	  (if (null foreign-verb)
+	      speech
+	    (concat foreign-verb
+		    " < '"
+		    (make-temp-file "jpl/" nil nil speech)
+		    "'"))))
 
 (defun j-over-mini (sentence)
   "execute J sentence from mini buffer with global J instance"
@@ -98,7 +98,7 @@ containing the `speech' or as a single sentence if `nil'."
 	 (vm0 (file-attributes j-viewmat-png)))
     (cond (J
 	   (let ((sentences (buffer-substring-no-properties a b)))
-	     (j-do engine (concat "1!:44 '" default-directory "'"))
+	     (j-getr engine (concat "1!:44 '" default-directory "'"))
 	     (pop-to-buffer (cdr out))
 	     (goto-char (point-max))
 	     (insert (j-eval engine sentences "0!:1"))
@@ -181,11 +181,11 @@ containing the `speech' or as a single sentence if `nil'."
 ;;;; mode
 (defvar jpl-mode-keymap
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c c")   'j-over-buffer)
-    (define-key map (kbd "C-c l")   'j-over-line)
-    (define-key map (kbd "C-c i")   'j-docs)
-    (define-key map (kbd "C-c j")   'joogle)
-    (define-key map (kbd "M-p")     'prettify-symbols-mode)
+    (define-key map (kbd "C-c c") 'j-over-buffer)
+    (define-key map (kbd "C-c l") 'j-over-line)
+    (define-key map (kbd "C-c i") 'j-docs)
+    (define-key map (kbd "C-c j") 'joogle)
+    (define-key map (kbd "M-p")   'prettify-symbols-mode)
     map)
   "Keymap for J major mode")
 
@@ -209,4 +209,3 @@ containing the `speech' or as a single sentence if `nil'."
   "world wide J")
 
 (provide 'jpl-mode)
-
