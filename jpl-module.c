@@ -16,14 +16,14 @@ static JDT jdo;static JFT jfree;static JIT jinit;static JSXT jsmx;static JGT jge
 static V jputs (J j, int t, C* s) // make me not exit *emacs*
 { if(MTYOEXIT==t) exit((int)(I)s); fputs(s,stdout); fflush(stdout); }
 static C* estring(EE* e, EV s)
-{ DP sz = 0; e->copy_string_contents(e,s,NULL,&sz);
-  C *es = malloc(sz); e->copy_string_contents(e,s,es,&sz); R es; }
+{ DP sz=0; e->copy_string_contents(e,s,NULL,&sz);
+  C *es=malloc(sz); e->copy_string_contents(e,s,es,&sz); R es; }
 EFUN(jedo)
-{ J j = e->get_user_ptr(e,a[0]); C* s = estring(e,a[1]);
-  int r = jdo(j,s); free(s); R e->make_integer(e,r); }
+{ J j=e->get_user_ptr(e,a[0]); C*s=estring(e,a[1]);
+  int r=jdo(j,s); free(s); R e->make_integer(e,r); }
 EFUN(jedor)
-{ J j = e->get_user_ptr(e,a[0]);C* s = estring(e,a[1]);jdo(j,s);C* r = jgetr(j);
-  EV o = e->make_string(e,r,strlen(r));free(s); free(r);R o; }
+{ J j=e->get_user_ptr(e,a[0]); C*s=estring(e,a[1]);jdo(j,s);C*r=jgetr(j);
+  EV o=e->make_string(e,r,strlen(r));free(s); free(r);R o; }
 // need to respond to C-g
 // static void sigint(int k){**adadbreak+=1;signal(SIGINT,sigint);}
 // adadbreak=(char**)jt; // first address in jt is address of breakdata
@@ -37,11 +37,11 @@ int emacs_module_init (ERT* rt)
   jfree = (JFT)dlsym(lj,"JFree"); jsmx = (JSXT)dlsym(lj,"JSMX");
   jgetr = (JGT)dlsym(lj,"JGetR");
   EV provide = e->intern(e,"provide"); EV fset = e->intern(e,"fset");
-  a[1] = e->make_function(e,0,0,jeini,"Create a J Engine",NULL);
+  a[1] = e->make_function(e,0,0,jeini,"Create a J engine",NULL);
   a[0] = e->intern(e,"j-engine"); e->funcall(e,fset,2,a);
-  a[1] = e->make_function(e,2,2,jedo,"Execute a J Sentence",NULL);
+  a[1] = e->make_function(e,2,2,jedo,"Execute a J sentence",NULL);
   a[0] = e->intern(e,"j-do"); e->funcall(e,fset,2,a);
-  a[1] = e->make_function(e,2,2,jedor,"Execute a J Sentence with capture",NULL);
+  a[1] = e->make_function(e,2,2,jedor,"Execute a J sentence with capture",NULL);
   a[0] = e->intern(e,"j-dor"); e->funcall(e,fset,2,a);
   a[1] = e->make_function(e,2,2,jesmx,"Set J i/o ",NULL);
   a[0] = e->intern(e,"j-smx"); e->funcall(e,fset,2,a);
