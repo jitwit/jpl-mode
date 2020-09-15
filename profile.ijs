@@ -1,4 +1,4 @@
-NB. J profile for emacs
+NB. J profile/prelude for emacs
 ARGV_z_ =: < 'emacs'
 jpathsep_z_=: '/'&(('\' I.@:= ])})
 bin =. BINPATH_z_ =. '~/.guix-profile/bin',~home=. 2!:5'HOME'
@@ -15,3 +15,52 @@ md &.> (user,'/projects');break;config;snap;temp NB. should handle in emacs?
 0!:0 <jpathsep (4!:55 (;:'userx ids md'), ids)]system,'/util/boot.ijs'
 require 'viewmat plot stats/bonsai'
 VISIBLE_jviewmat_ =: 0 NB. suppress viewmat from trying to open file itself
+
+NB. letters
+az =: a.{~97+i.26
+AZ =: a.{~65+i.26
+a09 =: a.{~48+i.10
+
+NB. pala=: 0.5 0.5 0.5
+NB. palb=: 0.5 0.5 0.5
+NB. palc=: 1.0 1.0 1.0
+NB. pald =: 0 0.33 0.67
+NB. 
+NB. plt =: 3 : '<. 255 * 1 <. 0 >. pala + palb * 2 o. 2p1 * pald + palc * y'
+NB. 
+NB. palette=: plt"0 (255 %~ i. _256)
+
+NB. **********************
+NB. * org mode utilities *
+NB. **********************
+link =: '[[file:'&, @ ,&']]'
+linkf =: 4 : 0
+  NB. x linkf y: write bytes y to file x. intended for org mode 
+  y 1!:2 < x
+  link x
+)
+linki =: 4 : 0
+  NB. x linki y: write image y to file x. intended for org mode
+  require 'ide/qt/qtlib'
+  y writeimg_jqtide_ x
+  link x
+)
+linkv =: 4 : 0
+  NB. x linkv y: viewmat matrix y to file x. intended for org mode
+  v =. VISIBLE_jviewmat_
+  VISIBLE_jviewmat_ =: 0
+  viewmat y
+  2!:1 'cp ',(jpath '~user/temp/viewmat.png'),' ',x
+  VISIBLE_jviewmat_ =: v
+  link x
+)
+linkvbw =: 4 : 0
+  NB. x linkv y: black/white viewmat matrix y to file x. intended for
+  NB. org mode
+  v =. VISIBLE_jviewmat_
+  VISIBLE_jviewmat_ =: 0
+  (0 0 0,:255 255 255) viewmat y
+  2!:1 'cp ',(jpath '~user/temp/viewmat.png'),' ',x
+  VISIBLE_jviewmat_ =: v
+  link x
+)

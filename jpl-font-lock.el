@@ -42,7 +42,7 @@
 
 (defvar j-string-face
   (defface j-string-face ;; #14816F
-    `((t (:foreground "#47AC9A"))) ;; "#484848"
+    `((t (:foreground "#424568"))) ;; "#484848" 47AC9A
     "''''"
     :group 'jpl-font-lock))
 
@@ -52,61 +52,60 @@
     "whilst."
     :group 'jpl-font-lock))
 
-;; based on: https://wjmn.github.io/posts/j-can-look-like-apl/
-(defvar j->apl
-  '(("/\."      . ?⌸)
-    (";\."      . ?⌺)
-					; ⍠
-    (",\."      . ?⍪)
-    ("\$:"      . ?∇)
-    ("/:"       . ?⍋)
-    ("\\:"      . ?⍒)
+;    ("/\."      . ?⌿)    
+;    ("@"        . ?⍛)
+;    ("@:"       . ?⍜) ⍤
     ;; a bit like amend: @    
-    ;;    ("@"        . ?⍛)
-    ;;    ("@:"       . ?⍜) ⍤
     ;; beside ∘ like ` 
     ;; bind ∘ bond & or ⍥ like over &
-    ("a:"       . ?⍬) ; more like ''
-    ("%\."      . ?⌹)
-    ("-:"       . ?≡) ; also depth? maximum nesting ≡
-    ("=\."      . ?←)
-    ("=:"       . ?←)
-    ("_:"       . ?∞)
-    ("<:"       . ?≤)
-    (">:"       . ?≥)
-    ("%:"       . ?√)
-    ("~:"       . ?≠) ; unique
-    ("|."       . ?⌽)
-    ("|:"       . ?⍉)
-    ("-\."      . ?~) ; not/excluding
-    ("\"\."     . ?⍎)
-    ("#\."      . ?⊥) ; decode
-    ("#:"       . ?⊤) ; encode
-    ("\":"      . ?⍕)
-    ("^:"       . ?⍣)
-    ("*\."      . ?∧)
-    ("+\."      . ?∨)
-    ("e\."      . ?∊) ; maybe also ravel? ; 
-    ("o\."      . ?○)
-    ("E\."      . ?⍷)
-    ("i\."      . ?⍳) ; iota
-    ("I\."      . ?⍸) ; where
-    (">\."      . ?⌈)
-    ("<\."      . ?⌊)
-    ("{\."      . ?↑) ; also disclose? ⊃
-    ("}\."      . ?↓)
-    ("~\."      . ?∪) ; unique
-    ("\["       . ?⊣)
-    ("^"        . ?*)
-    ("^\."      . ?⍟)
-    ("<"        . ?⊆) ; nest
-    ("#"        . ?≢) ; tally
-    ("%"        . ?÷)
-    ("]"        . ?⊢)
-    ("~"        . ?⍨)
-;    ("/\."      . ?⌿)    
-    ("\$"       . ?⍴)
-    ("\*"       . ?×))
+;; based on: https://wjmn.github.io/posts/j-can-look-like-apl/
+(defvar j->apl
+  '(("/\."  . ?⌸)
+    (";\."  . ?⌺)
+    (",\."  . ?⍪)
+    ("\$:"  . ?∇)
+    ("/:"   . ?⍋)
+    ("\\:"  . ?⍒)
+    ("a:"   . ?⍬) ; more like ''
+    ("%\."  . ?⌹)
+    ("-:"   . ?≡) ; also depth? maximum nesting ≡
+    ("=\."  . ?←)
+    ("=:"   . ?←)
+    ("_:"   . ?∞)
+    ("<:"   . ?≤)
+    (">:"   . ?≥)
+    ("%:"   . ?√)
+    ("~:"   . ?≠) ; unique
+    ("|."   . ?⌽)
+    ("|:"   . ?⍉)
+    ("-\."  . ?~) ; not/excluding
+    ("\"\." . ?⍎)
+    ("#\."  . ?⊥) ; decode
+    ("#:"   . ?⊤) ; encode
+    ("\":"  . ?⍕)
+    ("^:"   . ?⍣)
+    ("*\."  . ?∧)
+    ("+\."  . ?∨)
+    ("e\."  . ?∊) ; maybe also ravel? ; 
+    ("o\."  . ?○)
+    ("E\."  . ?⍷)
+    ("i\."  . ?⍳) ; iota
+    ("I\."  . ?⍸) ; where
+    (">\."  . ?⌈)
+    ("<\."  . ?⌊)
+    ("{\."  . ?↑) ; also disclose? ⊃
+    ("}\."  . ?↓)
+    ("~\."  . ?∪) ; unique
+    ("\["   . ?⊣)
+    ("^"    . ?*)
+    ("^\."  . ?⍟)
+    ("<"    . ?⊆) ; nest
+    ("#"    . ?≢) ; tally
+    ("%"    . ?÷)
+    ("]"    . ?⊢)
+    ("~"    . ?⍨)
+    ("\$"   . ?⍴)
+    ("\*"   . ?×))
   "Table to translate J to classic APL characters with pretty-symbols")
 
 (defvar j-syntax-table
@@ -202,8 +201,7 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
-     (,(rx "'" (* (not "'")) "'")     . font-lock-string-face ;; j-string-face
-      )
+     (,(rx "'" (* (not "'")) "'")     . j-string-face)
      (,(rx (eval `(or ,@j-controls))) . j-control-face)
      (,(rx (eval `(or ,@j-conj-3)))   . j-conjunction-face)
      (,(rx (eval `(or ,@j-verb-3)))   . j-verb-face)
