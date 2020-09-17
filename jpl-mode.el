@@ -53,7 +53,7 @@ address from `jpl-place->j' table. I presume they are freed by
 the user pointer finalizer specified in the dynamic module?"
   (mapc (lambda (buffer)
 	  (let ((j (gethash buffer jpl-place->j)))
-	    (when (and j (eq engine (cdr (assq 'engine j))))
+	    (when (and j (equal engine (cdr (assq 'engine j))))
 	      (kill-buffer (cdr (assq 'out j)))
 	      (remhash buffer jpl-place->j))))
 	(hash-table-keys jpl-place->j)))
@@ -100,6 +100,7 @@ containing the `speech' or as a single sentence if `nil'."
 (defun j-over-mini (sentence)
   "execute J sentence from mini buffer with global J instance"
   (interactive "sJ: ")
+  (jpl-check-wwj)
   (let ((vm0 (file-attributes j-viewmat-png)))
     (display-message-or-buffer
      (j-eval (cdr (assq 'engine (gethash "~" jpl-place->j)))
@@ -227,4 +228,12 @@ containing the `speech' or as a single sentence if `nil'."
   (cdr (assq 'engine (gethash "~" jpl-place->j)))
   "world wide J")
 
+(defun jpl-check-wwj ()
+  "recreate WWJ if it's been shut down"
+  (unless (gethash "~" jpl-place->j)
+    (j-create-instance "~")
+    (set WWJ (cdr (assq 'engine (gethash "~" jpl-place->j))))))
+
 (provide 'jpl-mode)
+
+
