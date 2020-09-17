@@ -47,6 +47,25 @@
   (make-hash-table :test 'equal)
   "Table mapping files? to J instances")
 
+(defun jpl-delete-instance (engine)
+  "delete references to J engines based on `engine's user-pointer
+address from `jpl-place->j' table. I presume they are freed by
+the user pointer finalizer specified in the dynamic module?"
+  (mapc (lambda (buffer)
+	  (let ((j (gethash buffer jpl-place->j)))
+	    (when (and j (eq engine (cdr (assq 'engine j))))
+	      (kill-buffer (cdr (assq 'out j)))
+	      (remhash buffer jpl-place->j))))
+	(hash-table-keys jpl-place->j)))
+
+(defun jpl-delete-buffer-engine ()
+  "Delete any references to engine associated with current
+  buffer."
+  (let ((engine (gethash (buffer-file-name) jpl-place->j)))
+    (and engine
+	 (jpl-delete-instance (assq 'engine engine))
+	 t)))
+
 ;; j instances should have J engine, home directory, optionally:
 ;; project main, project test... maybe should just learn projectile
 ;; (or similar)?
