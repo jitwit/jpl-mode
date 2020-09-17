@@ -61,9 +61,10 @@ the user pointer finalizer specified in the dynamic module?"
 (defun jpl-delete-buffer-engine ()
   "Delete any references to engine associated with current
   buffer."
+  (interactive)
   (let ((engine (gethash (buffer-file-name) jpl-place->j)))
     (and engine
-	 (jpl-delete-instance (assq 'engine engine))
+	 (jpl-delete-instance (cdr (assq 'engine engine)))
 	 t)))
 
 ;; j instances should have J engine, home directory, optionally:
@@ -206,6 +207,7 @@ containing the `speech' or as a single sentence if `nil'."
     (define-key map (kbd "C-c i") 'j-docs)
     (define-key map (kbd "C-c j") 'joogle)
     (define-key map (kbd "M-p")   'prettify-symbols-mode)
+    (define-key map (kbd "C-c k") 'jpl-delete-buffer-engine)
     map)
   "Keymap for J major mode")
 
