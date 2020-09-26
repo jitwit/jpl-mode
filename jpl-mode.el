@@ -224,7 +224,9 @@ containing the `speech' or as a single sentence if `nil'."
     (mkdir /tmp/jpl))
   (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . jpl-mode))
   (global-set-key (kbd "M-j") 'j-over-mini)
-  (j-create-instance "~"))
+  (j-create-instance "~")
+  (setq comment-start "NB. "
+	commend-end ""))
 
 (defvar WWJ
   (cdr (assq 'engine (gethash "~" jpl-place->j)))
