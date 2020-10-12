@@ -17,7 +17,7 @@
 
 (defvar j-conjunction-face
   (defface j-conjunction-face
-    `((t (:foreground "#FF1C5C"))) ; #FF0D4D 
+    `((t (:foreground "#FF1C5C")))
   "^:"
   :group 'jpl-font-lock))
 
@@ -116,7 +116,7 @@
     (modify-syntax-entry ?\) "-" table)
     (modify-syntax-entry ?\' "." table)
     (modify-syntax-entry ?\, "-" table)
-    (modify-syntax-entry ?\. "-" table)
+;    (modify-syntax-entry ?\. "-" table)
     (modify-syntax-entry ?\# "-" table)
     (modify-syntax-entry ?\& "-" table)
     (modify-syntax-entry ?\/ "-" table)
