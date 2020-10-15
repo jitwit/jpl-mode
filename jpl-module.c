@@ -18,14 +18,13 @@ static C* estring(EE* e, EV s)
   C *es=malloc(sz); e->copy_string_contents(e,s,es,&sz); R es; }
 static V jputs (J j,int t,C*s)
 { if(MTYOEXIT==t) exit((int)(I)s); fputs(s,stdout); fflush(stdout); }
-EFUN(jeinit)// jsmx(j,jputs,NULL,NULL,NULL,2);
-{ J j = jinit(); R e->make_user_ptr(e,(V*)jfree,j); }
+EFUN(jeinit)
+{ R e->make_user_ptr(e,(V*)jfree,jinit()); }
 EFUN(jegetr)
-{ J j=e->get_user_ptr(e,a[0]); C*s=estring(e,a[1]);jdo(j,s);free(s);
-  C*r=jgetr(j); R e->make_string(e,r,strlen(r)); }
-EFUN(jesmx) // nb. need input: C*i=estring(e,a[1]);freopen(i,"r",stdin);free(i);
-{ J j=e->get_user_ptr(e,a[0]);
-  C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
+{ J j=e->get_user_ptr(e,a[0]);C*s=estring(e,a[1]);jdo(j,s);free(s);
+  C*r=jgetr(j);R e->make_string(e,r,strlen(r)); }
+EFUN(jesmx)
+{ J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
 int emacs_module_init (ERT* rt)
 { EE* e = rt->get_environment(rt); EV a[2]; V* lj = dlopen(LIBJ,RTLD_LAZY);
