@@ -1,5 +1,32 @@
 
 Evaluate J through emacs dynamic modules and ~libj.so~.
 
+I wrote this for fun and because I was getting fed up with how j-mode
+and org-babel interact. The code right now is usable for me but there
+are many ways it sucks, so I'd caution others against using it.
+
+* Lowlights
+- font lock: correctly classifies J tokens by verb, conjunction,
+  etc. and adds a colors for nouns and names. Basically, ~for_i. i. 10
+  do.~ will recognize that ij is getting bound and color it, bindings
+  such as ~'a b'=. y~ don't get highlighted as strings, and things
+  like ~a:~ and ~a.~ get their own color.
+- viewmat: if the ~viewmat.png~ file changes from executing some J, a
+  buffer pops up to display it inside emacs.
+- ~joogle~: emacs procedure that promps for a J token to look up and
+  opens the corresponding NuVoc page in a browser.
+- pretty symbols: ~M-p~ activates pretty symbols in a buffer and
+  approximates what the J would look like using traditional APL
+  characters.
+- calculator: globally, ~M-j~ fires up a prompt for some J to execute
+  at the mini buffer.
+
+* Warnings
+- if J segfaults, so does emacs.
+- if your J segfaults, so does emacs.
+- if your J has an infinite loop, there's no escape. This is (likely)
+  due to my poor understanding of how J, emacs, signals, keyboards,
+  and control flow interact.
+
 
 
