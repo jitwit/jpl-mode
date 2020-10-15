@@ -90,7 +90,7 @@ containing the `speech' or as a single sentence if `nil'."
 				 "0!:100" "0!:101" "0!:110" "0!:111"
 				 "0!:2" "0!:3" nil))
     (error "j-eval invalid `foreign-verb'" foreign-verb))
-  (j-getr J
+  (j-getr-threaded J
 	  (if (null foreign-verb)
 	      speech
 	    (concat foreign-verb
