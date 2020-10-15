@@ -35,6 +35,9 @@ EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
 static V* jdoit (V*a) { jdo(gj,gin);gout=jgetr(gj); R NULL; }
+static V* jinput (C*pmpt) {
+  
+}
 EFUN(jegetrt)
 { gj=e->get_user_ptr(e,a[0]);C*s=estring(e,a[1]);gin = s;
   adadbreak=(char**)gj;
