@@ -146,15 +146,15 @@ containing the `speech' or as a single sentence if `nil'."
 		   (float-time (time-subtract (current-time) t0))))))
 
 ;;;; documentation
-(defun j-NuVoc-speech (entity)
-  "Get the speech of a given J entity of the `j-NuVoc'"
+(defun j-nuvoc-speech (entity)
+  "Get the speech of a given J entity of the `j-nuvoc'"
   (cdadr entity))
 
 (defun j-find-thing (thing)
   "Find information about `thing' (exact match)"
   (interactive "sthing: ")
   (seq-find #'(lambda (entity)
-                (member thing (j-NuVoc-speech entity)))
+                (member thing (j-nuvoc-speech entity)))
             j-nuvoc))
 
 (defun j-find-things (thing)
@@ -163,7 +163,7 @@ containing the `speech' or as a single sentence if `nil'."
   (seq-filter #'(lambda (entity)
 		  (seq-find #'(lambda (tok)
 				(s-contains? thing tok))
-			    (j-NuVoc-speech entity)))
+			    (j-nuvoc-speech entity)))
               j-nuvoc))
 
 (defun j-urls (speech)
