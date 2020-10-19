@@ -6,6 +6,7 @@
 (require 'popup)
 (require 'browse-url)
 (require 'filenotify)
+(require 's)
 
 ;;;; group
 (defgroup jpl-mode nil
@@ -146,28 +147,39 @@ containing the `speech' or as a single sentence if `nil'."
 
 ;;;; documentation
 (defun j-find-thing (thing)
-  "Find information about thing (exact match)"
+  "Find information about `thing' (exact match)"
   (interactive "sthing: ")
   (seq-find #'(lambda (jentity)
                 (member thing (cdadr jentity)))
             j-nuvoc))
 
-(defun j-urls (thing)
-  "Look up urls related to a thing (exact match)"
-  (let ((entity (j-find-thing thing)))
-    (if entity
-        (seq-map #'(lambda (info)
-                     ;; guaranteed fields
-                     (append (cdr (assoc 'description (cdr info)))
-                             (cdr (assoc 'url (cdr info)))))
-                 (seq-filter #'(lambda (kv)
-                                 (equal (car kv) 'info))
-                             (cdr entity)))
-      nil)))
+(defun j-find-things (thing)
+  "Find information about `thing' (fuzzy matches)"
+  (interactive "sthing: ")
+  (seq-filter #'(lambda (jentity)
+		  (not
+		   (null
+		    (seq-find #'(lambda (tok)
+				  (s-contains? thing tok))
+			      (cdadr jentity)))))
+              j-nuvoc))
 
-(defun j-names (thing)
-  "Look up english names for thing"
-  (seq-map #'car (j-urls thing)))
+(defun j-urls (speech)
+  "Look up urls related to a string of `speech' (exact match)"
+  (seq-map #'(lambda (info)
+               ;; guaranteed fields
+               (append (cdr (assoc 'description (cdr info)))
+                       (cdr (assoc 'url (cdr info)))))
+	   (apply 'append
+		  (seq-map #'(lambda (entity)
+			       (seq-filter #'(lambda (kv)
+					       (equal (car kv) 'info))
+					   (cdr entity)))
+			   (j-find-things speech)))))
+
+(defun j-names (speech)
+  "Look up english names for `speech'"
+  (seq-map #'car (j-urls speech)))
 
 (defun joogle (thing)
   "Present a popup with links to information about thing"
