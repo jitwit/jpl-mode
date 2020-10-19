@@ -1001,7 +1001,7 @@
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/fdot")
          (description "Fix")))
-    (J (Conjunction "F. F.. F.:" "F: F:. F::")
+    (J (Conjunction "F." "F.." " F.:" "F:" " F:." " F::")
        (info
          (valence monad)
          (rank "_")
