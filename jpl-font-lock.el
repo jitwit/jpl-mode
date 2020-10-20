@@ -186,6 +186,8 @@
   `((
      ;; one day: multiline strings and inline explicit defs
      (,(rx "NB." (* not-newline))     . font-lock-comment-face)
+     (,(rx "{{")                      . j-copula-face)
+     (,(rx "}}")                      . j-copula-face)
      (,(rx (or (submatch-n 1 (eval j-identifier))
 	       (seq "'" (submatch-n 1
 				    (seq (eval j-identifier)
