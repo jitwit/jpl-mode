@@ -6,7 +6,7 @@
 typedef void V;typedef intmax_t I;typedef char C;typedef V* J;
 typedef ptrdiff_t DP;typedef V* (*JIT)();typedef int (*JDT)(J,C*);
 typedef C* (*JGT)(J);typedef V* (*JFT)(J);typedef V* (*JSXT) (J,V*,V*,V*,V*,I);
-typedef emacs_value EV; typedef emacs_env EE;typedef struct emacs_runtime ERT;
+typedef emacs_value EV;typedef emacs_env EE;typedef struct emacs_runtime ERT;
 #define R return
 #define LIBJ "libj.so"
 #define MTYOEXIT 5 // see jlib.h

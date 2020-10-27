@@ -99,14 +99,22 @@ containing the `speech' or as a single sentence if `nil'."
 		    (make-temp-file "jpl/" nil nil speech)
 		    "'"))))
 
+(defun j-local/global-engine ()
+  "get user pointer for J engine associated with current buffer
+or the global J engine if there is none."
+  (let ((J (gethash (buffer-file-name) jpl-place->j)))
+    (if J (cdr (assq 'engine J))
+      (jpl-check-wwj)
+      (cdr (assq 'engine (gethash "~" jpl-place->j))))))
+
 (defun j-over-mini (sentence)
-  "execute J sentence from mini buffer with global J instance"
+  "execute J sentence from mini buffer. the global J instance
+will be used unless the current buffer has its own."
   (interactive "sJ: ")
   (jpl-check-wwj)
-  (let ((vm0 (file-attributes j-viewmat-png)))
-    (display-message-or-buffer
-     (j-eval (cdr (assq 'engine (gethash "~" jpl-place->j)))
-	     sentence))
+  (let ((engine (j-local/global-engine))
+	(vm0 (file-attributes j-viewmat-png)))
+    (display-message-or-buffer (j-eval engine sentence))
     (unless (equal vm0 (file-attributes j-viewmat-png))
       (j-viewmat))))
 

@@ -3,6 +3,8 @@
   :group 'jpl
   :prefix "j-font-lock-")
 
+;;; hah maybe look to:
+;;; https://filmschoolrejects.com/colors-jean-luc-godard/
 (defvar j-verb-face
   (defface j-verb-face
     `((t (:foreground "#117EFF")))
@@ -162,7 +164,6 @@
     "S:" "L:" "H." 
     "&:" "&." "@:" "@." "`:" "!:" "!." ";."
     "::" ":." ".:" ".." "^:"))
-
 (defvar j-adv-1
   '("}" "." "\\" "/" "~"))
 (defvar j-verb-1
@@ -185,9 +186,9 @@
 (defvar j-font-locks
   `((
      ;; one day: multiline strings and inline explicit defs
-     (,(rx "NB." (* not-newline))     . font-lock-comment-face)
-     (,(rx "{{")                      . j-copula-face)
-     (,(rx "}}")                      . j-copula-face)
+     (,(rx "NB." (* not-newline))                   . font-lock-comment-face)
+     (,(rx "{{")                                    . j-is-face)
+     (,(rx "}}")                                    . j-is-face)
      (,(rx (or (submatch-n 1 (eval j-identifier))
 	       (seq "'" (submatch-n 1
 				    (seq (eval j-identifier)
@@ -203,17 +204,17 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
-     (,(rx "'" (* (not "'")) "'")     . j-string-face)
-     (,(rx (eval `(or ,@j-controls))) . j-control-face)
-     (,(rx (eval `(or ,@j-conj-3)))   . j-conjunction-face)
-     (,(rx (eval `(or ,@j-verb-3)))   . j-verb-face)
-     (,(rx (eval `(or ,@j-noun-2)))   . j-noun-face)
-     (,(rx (eval `(or ,@j-adv-2)))    . j-adverb-face)
-     (,(rx (eval `(or ,@j-conj-2)))   . j-conjunction-face)
-     (,(rx (eval `(or ,@j-verb-2)))   . j-verb-face)
-     (,(rx (eval `(or ,@j-verb-1)))   . j-verb-face)
-     (,(rx (eval `(or ,@j-conj-1)))   . j-conjunction-face)
-     (,(rx (eval `(or ,@j-adv-1)))    . j-adverb-face)))
+     (,(rx "'" (* (not "'")) "'")                   . j-string-face)
+     (,(rx (eval `(or ,@j-controls)))               . j-control-face)
+     (,(rx (eval `(or ,@j-conj-3)))                 . j-conjunction-face)
+     (,(rx (eval `(or ,@j-verb-3)))                 . j-verb-face)
+     (,(rx (eval `(or ,@j-noun-2)))                 . j-noun-face)
+     (,(rx (eval `(or ,@j-adv-2)))                  . j-adverb-face)
+     (,(rx (eval `(or ,@j-conj-2)))                 . j-conjunction-face)
+     (,(rx (eval `(or ,@j-verb-2)))                 . j-verb-face)
+     (,(rx (eval `(or ,@j-verb-1)))                 . j-verb-face)
+     (,(rx (eval `(or ,@j-conj-1)))                 . j-conjunction-face)
+     (,(rx (eval `(or ,@j-adv-1)))                  . j-adverb-face)))
   "J Mode font lock keys words")
 
 (provide 'jpl-font-lock)
