@@ -207,6 +207,11 @@ will be used unless the current buffer has its own."
   (interactive)
   (browse-url j-docs-help-index))
 
+(defun j-open-nuvoc ()
+  "open the nuvoc in the browser"
+  (interactive)
+  (browse-url "https://code.jsoftware.com/wiki/NuVoc"))
+
 ;;;; viewmat
 (defun j-viewmat ()
   "open and view a viewmat image"
@@ -227,6 +232,7 @@ will be used unless the current buffer has its own."
     (define-key map (kbd "C-c c") 'j-over-buffer)
     (define-key map (kbd "C-c l") 'j-over-line)
     (define-key map (kbd "C-c i") 'j-docs)
+    (define-key map (kbd "C-c n") 'j-open-nuvoc)
     (define-key map (kbd "C-c j") 'joogle)
     (define-key map (kbd "M-p")   'prettify-symbols-mode)
     (define-key map (kbd "C-c k") 'jpl-delete-buffer-engine)
@@ -261,5 +267,3 @@ will be used unless the current buffer has its own."
     (set WWJ (cdr (assq 'engine (gethash "~" jpl-place->j))))))
 
 (provide 'jpl-mode)
-
-
