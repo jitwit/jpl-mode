@@ -57,7 +57,9 @@ the user pointer finalizer specified in the dynamic module?"
 	    (when (and j (equal engine (cdr (assq 'engine j))))
 	      (kill-buffer (cdr (assq 'out j)))
 	      (remhash buffer jpl-place->j))))
-	(hash-table-keys jpl-place->j)))
+	(hash-table-keys jpl-place->j))
+  ;; memory leak!
+  )
 
 (defun jpl-delete-buffer-engine ()
   "Delete any references to engine associated with current

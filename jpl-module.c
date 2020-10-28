@@ -20,6 +20,8 @@ static V jputs (J j,int t,C*s)
 { if(MTYOEXIT==t) exit((int)(I)s); fputs(s,stdout); fflush(stdout); }
 EFUN(jeinit)
 { R e->make_user_ptr(e,(V*)jfree,jinit()); }
+EFUN(jefree)
+{ J j=e->get_user_ptr(e,a[0]); jfree(j); R e->make_integer(e,0); }
 EFUN(jegetr)
 { J j=e->get_user_ptr(e,a[0]);C*s=estring(e,a[1]);jdo(j,s);free(s);
   C*r=jgetr(j);R e->make_string(e,r,strlen(r)); }
@@ -38,4 +40,6 @@ int emacs_module_init (ERT* rt)
   a[0] = e->intern(e,"j-getr"); e->funcall(e,fset,2,a);
   a[1] = e->make_function(e,2,2,jesmx,"Set J i/o ",NULL);
   a[0] = e->intern(e,"j-smx"); e->funcall(e,fset,2,a);
+  a[1] = e->make_function(e,1,1,jefree,"Free J engine ",NULL);
+  a[0] = e->intern(e,"j-free"); e->funcall(e,fset,2,a);
   a[0] = e->intern(e, "jpl-module"); e->funcall(e,provide,1,a); R 0; }
