@@ -17,10 +17,9 @@ typedef emacs_value EV; typedef emacs_env EE;typedef struct emacs_runtime ERT;
 #define EFUN(f) static EV f(EE*e,DP n,EV*a,V*d)
 int plugin_is_GPL_compatible;
 static JDT jdo;static JFT jfree;static JIT jinit;static JSXT jsmx;static JGT jgetr;
-static J gj; static C* gin; static C* gout;
-static C **adadbreak;
+static J gj; static C* gin; static C* gout;static C **adadbreak;
 static void sigint(int k){**adadbreak+=1;signal(SIGINT,sigint);}
-static void sigint2(int k){**adadbreak+=1;}
+//static void sigint2(int k){**adadbreak+=1;}
 static C* estring(EE* e, EV s)
 { DP sz=0; e->copy_string_contents(e,s,NULL,&sz);
   C *es=malloc(sz); e->copy_string_contents(e,s,es,&sz); R es; }
@@ -35,26 +34,16 @@ EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
 static V* jdoit (V*a) { jdo(gj,gin);gout=jgetr(gj); R NULL; }
-static V* jinput (C*pmpt) {
-  
-}
 EFUN(jegetrt)
 { gj=e->get_user_ptr(e,a[0]);C*s=estring(e,a[1]);gin = s;
   adadbreak=(char**)gj;
   jsmx(gj,NULL,NULL,NULL,NULL,2);
-  pthread_t t;
-  pthread_create (&t,NULL,jdoit,NULL);
-  int iter=0;
-  printf("ok 2\n");
-  while(pthread_tryjoin_np (t,NULL)) {
-    if (e->should_quit(e)) {
-      printf("request to quit!\n");
-      assert(0==pthread_detach(t));
-      break;
-    }
-    iter++;
+  pthread_t t; pthread_create (&t,NULL,jdoit,NULL);
+  // ahhhh didn't seem to work because double C-g disabled on X-window emacs
+  while(pthread_tryjoin_np(t,NULL)) {
+    if (e->should_quit(e))
+      { gout = "break"; assert(0==pthread_detach(t)); break; }
   }
-  printf("iters: %d\nresult: %s\nlen result: %ld\n",iter,gout,strlen(gout));
   R e->make_string(e,gout,strlen(gout));
 }
 int emacs_module_init (ERT* rt)
