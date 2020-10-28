@@ -33,16 +33,18 @@ EFUN(jegetr)
 EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
-static V* jdoit (V*a) { jdo(gj,gin);gout=jgetr(gj); R NULL; }
+static V* jdoit (V*a)
+{ jdo(gj,gin);gout=jgetr(gj); R NULL; }
 EFUN(jegetrt)
 { gj=e->get_user_ptr(e,a[0]);C*s=estring(e,a[1]);gin = s;
-  adadbreak=(char**)gj;
-  jsmx(gj,NULL,NULL,NULL,NULL,2);
-  pthread_t t; pthread_create (&t,NULL,jdoit,NULL);
-  // ahhhh didn't seem to work because double C-g disabled on X-window emacs
-  while(pthread_tryjoin_np(t,NULL)) {
+  adadbreak=(char**)gj; jsmx(gj,NULL,NULL,NULL,NULL,2);
+  pthread_t t;V *r;pthread_create (&t,NULL,jdoit,NULL);
+  // ahhhh didn't seem to work because double C-g disabled on X-window emacs...
+  // though, J engine not getting control back
+  while(pthread_tryjoin_np(t,&r)) {
     if (e->should_quit(e))
-      { gout = "break"; assert(0==pthread_detach(t)); break; }
+      { adadbreak+=1; assert(0==pthread_detach(t)); gout = "break";
+	break; }
   }
   R e->make_string(e,gout,strlen(gout));
 }
