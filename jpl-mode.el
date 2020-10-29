@@ -201,8 +201,9 @@ will be used unless the current buffer has its own."
 					    :value
 					    (seq-elt url 1)))
                        (j-urls thing))))
-    (when urls
-      (browse-url (popup-menu* urls)))))
+    (if urls
+	(browse-url (popup-menu* urls))
+      (princ (format "JOOGLE: no matches for '%s'" thing)))))
 
 (defun j-docs ()
   "only works on my guix when j-docs-help addon is present"
