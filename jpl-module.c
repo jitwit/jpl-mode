@@ -46,7 +46,7 @@ EFUN(jegetrt)
       { adadbreak+=1;
 	// breaks C-g in emacs, but does manage to get J to break...
 	//	signal(SIGINT,sigint);
-	assert(0==pthread_detach(t));
+	assert(0==pthread_kill(t,SIGINT));
 	gout = "break";
 	break; }
   }
