@@ -43,7 +43,11 @@ EFUN(jegetrt)
   // though, J engine not getting control back
   while(pthread_tryjoin_np(t,&r)) {
     if (e->should_quit(e))
-      { adadbreak+=1; assert(0==pthread_detach(t)); gout = "break";
+      { adadbreak+=1;
+	// breaks C-g in emacs, but does manage to get J to break...
+	//	signal(SIGINT,sigint);
+	assert(0==pthread_detach(t));
+	gout = "break";
 	break; }
   }
   R e->make_string(e,gout,strlen(gout));
