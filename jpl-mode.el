@@ -6,6 +6,7 @@
 (require 'popup)
 (require 'browse-url)
 (require 'filenotify)
+(require 'pdf-tools)
 (require 's)
 
 ;;;; group
@@ -27,6 +28,11 @@
 
 (defcustom j-viewmat-png
   "~/j902-user/temp/viewmat.png"
+  "viewmat file"
+  :group 'jpl)
+
+(defcustom j-plot-pdf
+  "~/j902-user/temp/plot.pdf"
   "viewmat file"
   :group 'jpl)
 
@@ -115,10 +121,13 @@ will be used unless the current buffer has its own."
   (interactive "sJ: ")
   (jpl-check-wwj)
   (let ((engine (j-local/global-engine))
-	(vm0 (file-attributes j-viewmat-png)))
+	(vm0 (file-attributes j-viewmat-png))
+	(pl0 (file-attributes j-plot-pdf)))
     (display-message-or-buffer (j-eval engine sentence))
     (unless (equal vm0 (file-attributes j-viewmat-png))
-      (j-viewmat))))
+      (j-viewmat))
+    (unless (equal pl0 (file-attributes j-plot-pdf))
+      (j-plot))))
 
 (defun j-over-region (a b)
   "Send region to J"
@@ -127,7 +136,8 @@ will be used unless the current buffer has its own."
 	 (J (gethash where jpl-place->j))
 	 (engine (cdr (assq 'engine J)))
 	 (out (assq 'out J))
-	 (vm0 (file-attributes j-viewmat-png)))
+	 (vm0 (file-attributes j-viewmat-png))
+	 (pl0 (file-attributes j-plot-pdf)))
     (cond (J
 	   (let ((sentences (buffer-substring-no-properties a b)))
 	     (j-getr engine (concat "1!:44 '" default-directory "'"))
@@ -136,6 +146,8 @@ will be used unless the current buffer has its own."
 	     (insert (j-eval engine sentences "0!:1"))
 	     (unless (equal vm0 (file-attributes j-viewmat-png))
 	       (j-viewmat))
+	     (unless (equal pl0 (file-attributes j-plot-pdf))
+	       (j-plot))
 	     (other-window 1)))
 	  (t (j-create-instance where) (j-over-region a b)))))
 
@@ -215,7 +227,7 @@ will be used unless the current buffer has its own."
   (interactive)
   (browse-url "https://code.jsoftware.com/wiki/NuVoc"))
 
-;;;; viewmat
+;;;; viewmat & plot
 (defun j-viewmat ()
   "open and view a viewmat image"
   (when (buffer-live-p j-viewmat-buffer)
@@ -225,6 +237,12 @@ will be used unless the current buffer has its own."
   (with-current-buffer j-viewmat-buffer
     (insert-image-file j-viewmat-png))
   (view-buffer j-viewmat-buffer))
+
+(defun j-plot ()
+  "open and view a plot"
+  ;; prevent j from opening plot in system call
+  (find-file j-plot-pdf)
+  (pdf-view-mode))
 
 ;; probably want `make-process' with argument `:command' as `nil'?
 ;;;; evaluation
