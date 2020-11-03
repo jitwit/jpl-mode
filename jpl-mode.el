@@ -245,7 +245,7 @@ will be used unless the current buffer has its own."
   (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest args) t))
             ((symbol-function 'y-or-n-p) (lambda (&rest args) t)))
     (find-file j-plot-pdf)
-    (pdf-view-mode)))
+    (pdf-view-redisplay)))
 
 ;; probably want `make-process' with argument `:command' as `nil'?
 ;;;; evaluation
