@@ -241,8 +241,11 @@ will be used unless the current buffer has its own."
 (defun j-plot ()
   "open and view a plot"
   ;; prevent j from opening plot in system call
-  (find-file j-plot-pdf)
-  (pdf-view-mode))
+  ;; https://www.emacswiki.org/emacs/YesOrNoP
+  (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest args) t))
+            ((symbol-function 'y-or-n-p) (lambda (&rest args) t)))
+    (find-file j-plot-pdf)
+    (pdf-view-mode)))
 
 ;; probably want `make-process' with argument `:command' as `nil'?
 ;;;; evaluation
