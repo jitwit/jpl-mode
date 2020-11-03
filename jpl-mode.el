@@ -99,13 +99,16 @@ containing the `speech' or as a single sentence if `nil'."
 				 "0!:100" "0!:101" "0!:110" "0!:111"
 				 "0!:2" "0!:3" nil))
     (error "j-eval invalid `foreign-verb'" foreign-verb))
-  (j-getr J
-	  (if (null foreign-verb)
-	      speech
-	    (concat foreign-verb
-		    " < '"
-		    (make-temp-file "jpl/" nil nil speech)
-		    "'"))))
+  (let* ((input-temp (make-temp-file "jpl/" nil nil speech))
+	 (result (j-getr J
+			 (if (null foreign-verb)
+			     speech
+			   (concat foreign-verb
+				   " < '"
+				   input-temp
+				   "'")))))
+    (delete-file input-temp)
+    result))
 
 (defun j-local/global-engine ()
   "get user pointer for J engine associated with current buffer
