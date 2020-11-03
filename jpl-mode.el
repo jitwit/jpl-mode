@@ -99,7 +99,7 @@ containing the `speech' or as a single sentence if `nil'."
 				 "0!:100" "0!:101" "0!:110" "0!:111"
 				 "0!:2" "0!:3" nil))
     (error "j-eval invalid `foreign-verb'" foreign-verb))
-  (let* ((input-temp (make-temp-file "jpl/" nil nil speech))
+  (let* ((input-temp (make-temp-file "jpl" nil nil speech))
 	 (result (j-getr J
 			 (if (null foreign-verb)
 			     speech
@@ -276,14 +276,11 @@ will be used unless the current buffer has its own."
 	prettify-symbols-alist j->apl) ;; (pretty-add-keywords nil j->apl)
   (use-local-map jpl-mode-keymap))
 
-(let ((/tmp/jpl (concat (temporary-file-directory) "jpl")))
-  (unless (file-exists-p /tmp/jpl)
-    (mkdir /tmp/jpl))
-  (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . jpl-mode))
-  (global-set-key (kbd "M-j") 'j-over-mini)
-  (j-create-instance "~")
-  (setq comment-start "NB. "
-	commend-end ""))
+(add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . jpl-mode))
+(global-set-key (kbd "M-j") 'j-over-mini)
+(j-create-instance "~")
+(setq comment-start "NB. "
+      commend-end "")
 
 (defvar WWJ
   (cdr (assq 'engine (gethash "~" jpl-place->j)))
