@@ -10,19 +10,18 @@ are many ways it sucks, so I'd caution others against using it.
   conjunction, and so on (j-mode misidentifies things like ~:~ and a
   few others) and adds a colors for nouns and names. Basically, with
   ~for_a. i. 10 do.~ font-lock will recognize that ~a~ is a binding
-  and color it, bindings such as ~'a b'=. y~ don't get highlighted as
-  strings, and things like ~a:~ and ~a.~ get their own color.
+  and color it, bindings such as ~\'a b\'=. y~ don't get highlighted
+  as strings, and things like ~a:~ and ~a.~ get their own color.
 - *viewmat*: if the ~viewmat.png~ file changes from executing some J, a
   buffer pops up to display it inside emacs.
 - *plot*: if the ~plot.pdf~ file changes from executing some J, the
   buffer is opened and viewed through ~pdf-tools~.
 - *joogle*: emacs procedure that promps for a J token to look up and
   opens the corresponding NuVoc page in a browser.
-- *pretty symbols*: ~M-p~ activates pretty symbols in a buffer and
-  approximates what the J would look like using traditional APL
-  characters.
-- *calculator*: there's global access to a J prompt through key ~M-j~
-  at the mini-buffer.
+- *pretty symbols*: approximate J in APL glyphs through <kbd>M-p</kbd>
+  and pretty symbol mode.
+- *calculator*: access J prompt in the mini bar through key binding
+  <kbd>M-j</kbd>
 
 * Warnings
 - if J segfaults, so does emacs.
