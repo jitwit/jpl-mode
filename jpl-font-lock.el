@@ -54,6 +54,13 @@
     "whilst."
     :group 'jpl-font-lock))
 
+(defvar j-constant-face
+  (defface j-constant-face
+    `((t (:foreground "#51006D" ;; "#FF00FF" ;; 
+	  )))
+    "_1.2 2p1 3r2j1"
+    :group 'jpl-font-lock))
+
 ;    ("/\."      . ?⌿)    
 ;    ("@"        . ?⍛)
 ;    ("@:"       . ?⍜) ⍤
@@ -165,16 +172,19 @@
     "&:" "&." "@:" "@." "`:" "!:" "!." ";."
     "::" ":." ".:" ".." "^:"))
 (defvar j-adv-1
-  '("}" "\\" "/" "~" "."))
+  '("}" "\\" "/" "~"))
 (defvar j-verb-1
   '("?" "{" "]" "[" "!" "#" ";" "," "|" "$" "^" "%" "-" "*" "+" ">" "<" "="))
 (defvar j-conj-1
-  '("&" "@" "`" "\"" ":" "."))
+  '("&" "@" "`" "\"" ":"))
+
+;; to come, the hierarchy: . _ e (ad ar j) (p x) b
 (defvar j-numeric-constant
-  (rx (seq (or bol " ")
-	   (? "_")
-	   (+ digit)
-	   (? (seq "." (+ digit))))))
+  `(rx bow
+       (? "_")
+       (+ digit)
+       (? (or (seq "." (+ digit))
+	      "x"))))
 
 (defvar j-explicit
   (rx (or "13" "1" "2" "3" "4")
@@ -218,8 +228,8 @@
      (,(rx (eval `(or ,@j-conj-1)))                 . j-conjunction-face)
      (,(rx (eval `(or ,@j-adv-1)))                  . j-adverb-face)
      ; kludge (that doesn't even seem to work)
-     ;; (,j-numeric-constant                           . j-string-face)
-     ;; (,(rx ".")                                     . j-adverb-face)
+     (,(eval j-numeric-constant)                    . j-constant-face)
+     (,(rx ".")                                     . j-conjunction-face)
      ))
   "J Mode font lock keys words")
 
