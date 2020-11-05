@@ -165,18 +165,20 @@
     "&:" "&." "@:" "@." "`:" "!:" "!." ";."
     "::" ":." ".:" ".." "^:"))
 (defvar j-adv-1
-  '("}" "." "\\" "/" "~"))
+  '("}" "\\" "/" "~" "."))
 (defvar j-verb-1
   '("?" "{" "]" "[" "!" "#" ";" "," "|" "$" "^" "%" "-" "*" "+" ">" "<" "="))
 (defvar j-conj-1
   '("&" "@" "`" "\"" ":" "."))
+(defvar j-numeric-constant
+  (rx (seq (or bol " ")
+	   (? "_")
+	   (+ digit)
+	   (? (seq "." (+ digit))))))
 
-(setq j-comment-rx
-      (rx "NB." (* not-newline)))
-
-(setq j-explicit
-      (rx (or "13" "1" "2" "3" "4")
-	  (+ " ") ":" (* " ")))
+(defvar j-explicit
+  (rx (or "13" "1" "2" "3" "4")
+      (+ " ") ":" (* " ")))
 
 ; https://code.jsoftware.com/wiki/Vocabulary/Words#Words
 ; note: fixme only one consecutive _ allowed!
@@ -214,7 +216,11 @@
      (,(rx (eval `(or ,@j-verb-2)))                 . j-verb-face)
      (,(rx (eval `(or ,@j-verb-1)))                 . j-verb-face)
      (,(rx (eval `(or ,@j-conj-1)))                 . j-conjunction-face)
-     (,(rx (eval `(or ,@j-adv-1)))                  . j-adverb-face)))
+     (,(rx (eval `(or ,@j-adv-1)))                  . j-adverb-face)
+     ; kludge (that doesn't even seem to work)
+     ;; (,j-numeric-constant                           . j-string-face)
+     ;; (,(rx ".")                                     . j-adverb-face)
+     ))
   "J Mode font lock keys words")
 
 (provide 'jpl-font-lock)

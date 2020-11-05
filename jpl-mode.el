@@ -164,6 +164,14 @@ will be used unless the current buffer has its own."
     (princ (format "[jpl] dt : %fs"
 		   (float-time (time-subtract (current-time) t0))))))
 
+(defun j-over-below-point ()
+  "Send buffer below current point to J"
+  (interactive)
+  (let ((t0 (current-time)))
+    (j-over-region (point) (point-max))
+    (princ (format "[jpl] dt : %fs"
+		   (float-time (time-subtract (current-time) t0))))))
+
 (defun j-over-buffer ()
   "Send buffer to J"
   (interactive)
@@ -259,6 +267,7 @@ will be used unless the current buffer has its own."
 (defvar jpl-mode-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c c") 'j-over-buffer)
+    (define-key map (kbd "C-c b") 'j-over-below-point)
     (define-key map (kbd "C-c l") 'j-over-line)
     (define-key map (kbd "C-c i") 'j-docs)
     (define-key map (kbd "C-c n") 'j-open-nuvoc)
