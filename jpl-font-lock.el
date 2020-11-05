@@ -56,8 +56,8 @@
 
 (defvar j-constant-face
   (defface j-constant-face
-    `((t (:foreground "#51006D" ;; "#FF00FF" ;; 
-	  )))
+    ;; "#FFAAFF"
+    `((t (:foreground "#51006D")))
     "_1.2 2p1 3r2j1"
     :group 'jpl-font-lock))
 
@@ -133,6 +133,7 @@
     (modify-syntax-entry ?\~ "-" table)
     (modify-syntax-entry ?\: "-" table)
     (modify-syntax-entry ?\- "-" table)
+    (modify-syntax-entry ?\_ "w" table)
     (modify-syntax-entry ?\@ "-" table)
     (modify-syntax-entry ?\$ "-" table)
     (modify-syntax-entry ?\{ "-" table)
@@ -143,8 +144,6 @@
     (modify-syntax-entry ?\r "-" table)
     table)
   "Syntax table for j-mode")
-
-(defvar j-font-lock-constants '())
 
 (defvar j-controls
   '("assert."  "break."  "continue."  "while."  "whilst."  "for."  "do."  "end."
@@ -181,10 +180,26 @@
 ;; to come, the hierarchy: . _ e (ad ar j) (p x) b
 (defvar j-numeric-constant
   `(rx bow
-       (? "_")
-       (+ digit)
-       (? (or (seq "." (+ digit))
-	      "x"))))
+       (or (seq (? "_")
+		(+ digit)
+		(? (or (seq
+			(? "." (+ digit)) ;; to allow ending x to mean exact
+			(? (seq (or "e" "ad" "ar" "j" "r" "p" "x" "b")
+				(? "_")
+				(+ digit)
+				(? "." (+ digit))
+				;; no "b" here?
+				(? (seq (or "e" "ad" "ar" "j" "r" "p" "x" "b")
+					(? "_")
+					(+ digit)
+					(? "." (+ digit))
+					(? (seq (or "e" "ad" "ar" "j" "r" "p" "x" "b")
+						(? "_")
+						(+ digit)
+						(? "." (+ digit)))))))))
+		       "x")))
+	   "_"
+	   "__")))
 
 (defvar j-explicit
   (rx (or "13" "1" "2" "3" "4")
