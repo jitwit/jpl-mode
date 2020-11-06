@@ -54,11 +54,11 @@
     "whilst."
     :group 'jpl-font-lock))
 
-(defvar j-constant-face
-  (defface j-constant-face
+(defvar j-atom-face
+  (defface j-atom-face
     ;; "#FFAAFF"
-    `((t (:foreground "#51006D")))
-    "_1.2 2p1 3r2j1"
+    `((t (:foreground "#4A3580")))
+    "_1.2 2p1 3r2j1 ; 'bytes'"
     :group 'jpl-font-lock))
 
 ;    ("/\."      . ?⌿)    
@@ -121,11 +121,11 @@
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\" "_" table)
     (modify-syntax-entry ?\= "-" table)
-    (modify-syntax-entry ?\( "-" table)
-    (modify-syntax-entry ?\) "-" table)
-    (modify-syntax-entry ?\' "." table)
+    (modify-syntax-entry ?\( "w" table)
+    (modify-syntax-entry ?\) "w" table)
+    ;; maybe should be string delim? need to fix comments if so
+    ;;    (modify-syntax-entry ?\' "." table) ;
     (modify-syntax-entry ?\, "-" table)
-;    (modify-syntax-entry ?\. "-" table)
     (modify-syntax-entry ?\# "-" table)
     (modify-syntax-entry ?\& "-" table)
     (modify-syntax-entry ?\/ "-" table)
@@ -140,8 +140,9 @@
     (modify-syntax-entry ?\} "-" table)
     (modify-syntax-entry ?\< "-" table)
     (modify-syntax-entry ?\> "-" table)
-    (modify-syntax-entry ?\n "-" table)
-    (modify-syntax-entry ?\r "-" table)
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?\r ">" table)
+;    (modify-syntax-entry ?\. "-" table)
     table)
   "Syntax table for j-mode")
 
@@ -176,8 +177,6 @@
   '("?" "{" "]" "[" "!" "#" ";" "," "|" "$" "^" "%" "-" "*" "+" ">" "<" "="))
 (defvar j-conj-1
   '("&" "@" "`" "\"" ":"))
-
-;; to come, the hierarchy: . _ e (ad ar j) (p x) b
 (defvar j-numeric-constant
   `(rx bow
        (or (seq (? "_")
@@ -201,9 +200,7 @@
 	   "_"
 	   "__")))
 
-(defvar j-explicit
-  (rx (or "13" "1" "2" "3" "4")
-      (+ " ") ":" (* " ")))
+;; (defvar j-explicit (rx (or "13" "1" "2" "3" "4") (+ " ") ":" (* " ")))
 
 ; https://code.jsoftware.com/wiki/Vocabulary/Words#Words
 ; note: fixme only one consecutive _ allowed!
@@ -213,9 +210,9 @@
 (defvar j-font-locks
   `((
      ;; one day: multiline strings and inline explicit defs
-     (,(rx "NB." (* not-newline))                   . font-lock-comment-face)
-     (,(rx "{{")                                    . j-is-face)
-     (,(rx "}}")                                    . j-is-face)
+     (,(rx "NB." (* not-newline))       . font-lock-comment-face)
+     (,(rx "{{")                        . j-is-face)
+     (,(rx "}}")                        . j-is-face)
      (,(rx (or (submatch-n 1 (eval j-identifier))
 	       (seq "'" (submatch-n 1
 				    (seq (eval j-identifier)
@@ -231,20 +228,20 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
-     (,(rx "'" (* (not "'")) "'")                   . j-string-face)
-     (,(rx (eval `(or ,@j-controls)))               . j-control-face)
-     (,(rx (eval `(or ,@j-conj-3)))                 . j-conjunction-face)
-     (,(rx (eval `(or ,@j-verb-3)))                 . j-verb-face)
-     (,(rx (eval `(or ,@j-noun-2)))                 . j-noun-face)
-     (,(rx (eval `(or ,@j-adv-2)))                  . j-adverb-face)
-     (,(rx (eval `(or ,@j-conj-2)))                 . j-conjunction-face)
-     (,(rx (eval `(or ,@j-verb-2)))                 . j-verb-face)
-     (,(rx (eval `(or ,@j-verb-1)))                 . j-verb-face)
-     (,(rx (eval `(or ,@j-conj-1)))                 . j-conjunction-face)
-     (,(rx (eval `(or ,@j-adv-1)))                  . j-adverb-face)
-     ; kludge (that doesn't even seem to work)
-     (,(eval j-numeric-constant)                    . j-constant-face)
-     (,(rx ".")                                     . j-conjunction-face)
+     (,(rx "'" (* (not (any "'"))) "'") . j-atom-face)
+     (,(rx (eval `(or ,@j-controls)))   . j-control-face)
+     (,(rx (eval `(or ,@j-conj-3)))     . j-conjunction-face)
+     (,(rx (eval `(or ,@j-verb-3)))     . j-verb-face)
+     (,(rx (eval `(or ,@j-noun-2)))     . j-noun-face)
+     (,(rx (eval `(or ,@j-adv-2)))      . j-adverb-face)
+     (,(rx (eval `(or ,@j-conj-2)))     . j-conjunction-face)
+     (,(rx (eval `(or ,@j-verb-2)))     . j-verb-face)
+     (,(rx (eval `(or ,@j-verb-1)))     . j-verb-face)
+     (,(rx (eval `(or ,@j-conj-1)))     . j-conjunction-face)
+     (,(rx (eval `(or ,@j-adv-1)))      . j-adverb-face)
+     ;; kludge
+     (,(eval j-numeric-constant)        . j-atom-face)
+     (,(rx ".")                         . j-conjunction-face)
      ))
   "J Mode font lock keys words")
 
