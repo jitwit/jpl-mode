@@ -1,4 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
+(add-to-list 'load-path "~/code/jpl-mode/")
 (require 'jpl-module)
 (require 'jpl-font-lock)
 (require 'pretty-mode)

@@ -2,7 +2,7 @@ NB. J profile/prelude for emacs
 ARGV_z_ =: < 'emacs'
 jpathsep_z_=: '/'&(('\' I.@:= ])})
 bin =. BINPATH_z_ =. '/.guix-profile/bin',~home=. 2!:5'HOME'
-install=. home,'/.guix-profile/share/j'
+install=. '/Applications/j901'
 'addons system tools'=. install&, &.> '/addons';'/system';'/tools'
 user=. home,userx=. '/j902-user'
 'break config snap temp'=. user&, &.> '/break';'/config';'/snap';'/temp'

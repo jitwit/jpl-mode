@@ -1,4 +1,4 @@
-#include <emacs-module.h>
+#include "emacs-module.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,7 +8,7 @@ typedef ptrdiff_t DP;typedef V* (*JIT)();typedef int (*JDT)(J,C*);
 typedef C* (*JGT)(J);typedef V* (*JFT)(J);typedef V* (*JSXT) (J,V*,V*,V*,V*,I);
 typedef emacs_value EV;typedef emacs_env EE;typedef struct emacs_runtime ERT;
 #define R return
-#define LIBJ "libj.so"
+#define LIBJ "/Applications/j901/bin/libj.dylib"
 #define MTYOEXIT 5 // see jlib.h
 #define EFUN(f) static EV f(EE*e,DP n,EV*a,V*d)
 int plugin_is_GPL_compatible;
