@@ -231,6 +231,7 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
+     ;; emacs 26 seeems to have issue with (not "'")
      ;;     (,(rx "'" (* (not "'")) "'")                   . j-string-face)
      (,(rx (eval `(or ,@j-controls)))               . j-control-face)
      (,(rx (eval `(or ,@j-conj-3)))                 . j-conjunction-face)
