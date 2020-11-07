@@ -56,8 +56,8 @@
 
 (defvar j-atom-face
   (defface j-atom-face
-    ;; "#FFAAFF"
-    `((t (:foreground "#4A3580")))
+    ;; "#FFAAFF" 13303B
+    `((t (:foreground "#10319B")))
     "_1.2 2p1 3r2j1 ; 'bytes'"
     :group 'jpl-font-lock))
 
@@ -228,7 +228,7 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
-     (,(rx "'" (* (not (any "'"))) "'") . j-atom-face)
+     (,(rx "'" (* (not (any "'"))) "'") . j-string-face)
      (,(rx (eval `(or ,@j-controls)))   . j-control-face)
      (,(rx (eval `(or ,@j-conj-3)))     . j-conjunction-face)
      (,(rx (eval `(or ,@j-verb-3)))     . j-verb-face)
