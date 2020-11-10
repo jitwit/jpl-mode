@@ -121,8 +121,8 @@
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\" "_" table)
     (modify-syntax-entry ?\= "-" table)
-    (modify-syntax-entry ?\( "w" table)
-    (modify-syntax-entry ?\) "w" table)
+    (modify-syntax-entry ?\( "-" table)
+    (modify-syntax-entry ?\) "-" table)
     ;; maybe should be string delim? need to fix comments if so
     ;;    (modify-syntax-entry ?\' "." table) ;
     (modify-syntax-entry ?\, "-" table)
@@ -177,6 +177,7 @@
   '("?" "{" "]" "[" "!" "#" ";" "," "|" "$" "^" "%" "-" "*" "+" ">" "<" "="))
 (defvar j-conj-1
   '("&" "@" "`" "\"" ":"))
+;; nb. based numbers (b) can have a-z for bases 10 < b <= 36
 (defvar j-numeric-constant
   `(rx bow
        (or (seq (? "_")
@@ -209,7 +210,7 @@
 
 (defvar j-font-locks
   `((
-     ;; one day: multiline strings and inline explicit defs
+     ;; NB! ' NB. ' gets grabbed as comment!
      (,(rx "NB." (* not-newline))       . font-lock-comment-face)
      (,(rx "{{")                        . j-is-face)
      (,(rx "}}")                        . j-is-face)
