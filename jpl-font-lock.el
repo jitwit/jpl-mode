@@ -154,7 +154,7 @@
 (defvar j-verb-3
   '("_1:" "_2:" "_3:" "_4:" "_5:" "_6:" "_7:" "_8:" "_9:" "_0:" "p.." "{::"))
 (defvar j-conj-3
-  '("&.:"))
+  '("&.:" "F:." "F::" "F.." "F.:"))
 (defvar j-noun-2
   '("_." "a." "a:"))
 (defvar j-verb-2
@@ -162,13 +162,13 @@
     "x:" "u:" "s:" "r." "q:" "p:" "p." "o." "L." "j." "I." "i:" "i." "E." "e."
     "C." "A." "?." "\":" "}:" "}." "{:" "{." "[:" "/:" "\\:" "#:" "#." ";:" ",:"
     ",." "|:" "|." "~:" "~." "$:" "$." "^." "%:" "%." "-:" "-." "*:" "*."  "+:"
-    "+." ">:" ">." "<:" "<." "\"."))
+    "+." ">:" ">." "<:" "<." "\"." "Z:"))
 (defvar j-adv-2
   '(;; sadly, "t:" "t."
     "M." "f." "b." "/." "\\."))
 (defvar j-conj-2
   '(; sadly: "T." "D:" "D." "d."
-    "S:" "L:" "H." 
+    "S:" "L:" "H." "F:" "F."
     "&:" "&." "@:" "@." "`:" "!:" "!." ";."
     "::" ":." ".:" ".." "^:"))
 (defvar j-adv-1
@@ -211,9 +211,10 @@
 (defvar j-font-locks
   `((
      ;; NB! ' NB. ' gets grabbed as comment!
-     (,(rx "NB." (* not-newline))       . font-lock-comment-face)
-     (,(rx "{{")                        . j-is-face)
-     (,(rx "}}")                        . j-is-face)
+     (,(rx "'" (* (not (any "'\n"))) "'") . j-string-face)
+     (,(rx "NB." (* not-newline))         . font-lock-comment-face)
+     (,(rx "{{")                          . j-is-face)
+     (,(rx "}}")                          . j-is-face)
      (,(rx (or (submatch-n 1 (eval j-identifier))
 	       (seq "'" (submatch-n 1
 				    (seq (eval j-identifier)
@@ -229,20 +230,19 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
-     (,(rx "'" (* (not (any "'"))) "'") . j-string-face)
-     (,(rx (eval `(or ,@j-controls)))   . j-control-face)
-     (,(rx (eval `(or ,@j-conj-3)))     . j-conjunction-face)
-     (,(rx (eval `(or ,@j-verb-3)))     . j-verb-face)
-     (,(rx (eval `(or ,@j-noun-2)))     . j-noun-face)
-     (,(rx (eval `(or ,@j-adv-2)))      . j-adverb-face)
-     (,(rx (eval `(or ,@j-conj-2)))     . j-conjunction-face)
-     (,(rx (eval `(or ,@j-verb-2)))     . j-verb-face)
-     (,(rx (eval `(or ,@j-verb-1)))     . j-verb-face)
-     (,(rx (eval `(or ,@j-conj-1)))     . j-conjunction-face)
-     (,(rx (eval `(or ,@j-adv-1)))      . j-adverb-face)
-     ;; kludge
-     (,(eval j-numeric-constant)        . j-atom-face)
-     (,(rx ".")                         . j-conjunction-face)
+     (,(rx (eval `(or ,@j-controls)))     . j-control-face)
+     (,(rx (eval `(or ,@j-conj-3)))       . j-conjunction-face)
+     (,(rx (eval `(or ,@j-verb-3)))       . j-verb-face)
+     (,(rx (eval `(or ,@j-noun-2)))       . j-noun-face)
+     (,(rx (eval `(or ,@j-adv-2)))        . j-adverb-face)
+     (,(rx (eval `(or ,@j-conj-2)))       . j-conjunction-face)
+     (,(rx (eval `(or ,@j-verb-2)))       . j-verb-face)
+     (,(rx (eval `(or ,@j-verb-1)))       . j-verb-face)
+     (,(rx (eval `(or ,@j-conj-1)))       . j-conjunction-face)
+     (,(rx (eval `(or ,@j-adv-1)))        . j-adverb-face)
+     ;; kludge				  
+     (,(eval j-numeric-constant)          . j-atom-face)
+     (,(rx ".")                           . j-conjunction-face)
      ))
   "J Mode font lock keys words")
 
