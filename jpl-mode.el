@@ -260,8 +260,17 @@ will be used unless the current buffer has its own."
     (find-file j-plot-pdf)
     (pdf-view-redisplay)))
 
-;; probably want `make-process' with argument `:command' as `nil'?
-;;;; evaluation
+(defun j-save-plot (output-file)
+  "save the most recent `j-plot-pdf' as a png in the given
+`output-file'"
+  (interactive)
+  (save-excursion
+    (cl-letf (((symbol-function 'read-file-name)
+	       (lambda (&rest args) output-file)))
+      (let ((b (find-file j-plot-pdf)))
+	(pdf-view-redisplay)
+	(image-save)
+	(kill-buffer b)))))
 
 ;;;; mode
 (defvar jpl-mode-keymap
