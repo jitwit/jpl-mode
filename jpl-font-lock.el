@@ -124,7 +124,7 @@
     (modify-syntax-entry ?\( "-" table)
     (modify-syntax-entry ?\) "-" table)
     ;; maybe should be string delim? need to fix comments if so
-    ;;    (modify-syntax-entry ?\' "." table) ;
+    ; (modify-syntax-entry ?\' "." table)
     (modify-syntax-entry ?\, "-" table)
     (modify-syntax-entry ?\# "-" table)
     (modify-syntax-entry ?\& "-" table)
@@ -211,7 +211,6 @@
 (defvar j-font-locks
   `((
      ;; NB! ' NB. ' gets grabbed as comment!
-     (,(rx "'" (* (not (any "'\n"))) "'") . j-string-face)
      (,(rx "NB." (* not-newline))         . font-lock-comment-face)
      (,(rx "{{")                          . j-is-face)
      (,(rx "}}")                          . j-is-face)
@@ -230,6 +229,7 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
+     (,(rx "'" (* (not (any "'\n"))) "'") . j-string-face)
      (,(rx (eval `(or ,@j-controls)))     . j-control-face)
      (,(rx (eval `(or ,@j-conj-3)))       . j-conjunction-face)
      (,(rx (eval `(or ,@j-verb-3)))       . j-verb-face)
