@@ -272,6 +272,12 @@ will be used unless the current buffer has its own."
 	(image-save)
 	(kill-buffer b)))))
 
+(defun j-save-viewmat (output-file)
+  "save the most recent `j-plot-pdf' as a png in the given
+`output-file'"
+  (interactive)
+  (copy-file j-viewmat-png output-file t))
+
 ;;;; mode
 (defvar jpl-mode-keymap
   (let ((map (make-sparse-keymap)))
