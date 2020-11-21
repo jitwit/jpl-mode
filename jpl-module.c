@@ -39,9 +39,9 @@ static V* jdoit (V*a) {
 EFUN(jeval)
 { JE je = {e->get_user_ptr(e,a[0]),estring(e,a[1]),NULL};
   pthread_t t;pthread_create (&t,NULL,jdoit,(V*)&je);
-  pthread_join (t,NULL);
+  pthread_join (t,NULL); // todo e->should_quit stuff
   EV r = e->make_string(e,je.out,strlen(je.out));
-  free(je.out);
+  free(je.speech);free(je.out);
   R r; }
 int emacs_module_init (ERT* rt)
 { EE* e = rt->get_environment(rt); EV a[2];
