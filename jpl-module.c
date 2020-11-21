@@ -30,19 +30,29 @@ EFUN(jefree)
   jfree(j);
   R e->make_integer(e,0); }
 static V* jdoit (V*a) {
+  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
   JE *je = (JE*)a;
   jdo((*je).j,(*je).speech);
   C*r = jgetr((*je).j);
-  (*je).out = malloc(sizeof(C)*strlen(r));
+  (*je).out = malloc(strlen(r));
   (*je).out = strcpy((*je).out,r);
   R NULL; }
 EFUN(jeval)
 { JE je = {e->get_user_ptr(e,a[0]),estring(e,a[1]),NULL};
   pthread_t t;pthread_create (&t,NULL,jdoit,(V*)&je);
-  pthread_join (t,NULL); // todo e->should_quit stuff
+  struct timespec delay = {0,1000*100};
+  while(pthread_tryjoin_np(t,NULL)) {
+    if(e->should_quit(e)) {
+      assert(0==pthread_cancel(t));
+      R e->make_string(e,"",0);
+    }
+    nanosleep(&delay,NULL);
+  }
+  //  pthread_join (t,NULL); // todo e->should_quit stuff
   EV r = e->make_string(e,je.out,strlen(je.out));
   free(je.speech);free(je.out);
-  R r; }
+  R r;
+}
 int emacs_module_init (ERT* rt)
 { EE* e = rt->get_environment(rt); EV a[2];
   EV provide = e->intern(e,"provide"); EV fset = e->intern(e,"fset");
