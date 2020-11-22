@@ -17,6 +17,7 @@ typedef emacs_value EV;typedef emacs_env EE;typedef struct emacs_runtime ERT;
 #define EFUN(f) static EV f(EE*e,DP n,EV*a,V*d)
 typedef struct {J j; C* speech; C*out;} JE;
 int plugin_is_GPL_compatible;
+static C **adadbreak;
 static JDT jdo;static JFT jfree;static JIT jinit;static JSXT jsmx;static JGT jgetr;
 static C* estring(EE* e, EV s)
 { DP sz=0;e->copy_string_contents(e,s,NULL,&sz);C *es=malloc(sz);
@@ -35,20 +36,21 @@ static V* jdoit (V*a) {
   jdo((*je).j,(*je).speech);
   C*r = jgetr((*je).j);
   (*je).out = malloc(strlen(r));
-  (*je).out = strcpy((*je).out,r);
+  strcpy((*je).out,r);
   R NULL; }
 EFUN(jeval)
 { JE je = {e->get_user_ptr(e,a[0]),estring(e,a[1]),NULL};
   pthread_t t;pthread_create (&t,NULL,jdoit,(V*)&je);
-  struct timespec delay = {0,1000*100};
+  struct timespec delay = {0,1000*1000};
+  int flag=1;
+  adadbreak = (C**) je.j;
   while(pthread_tryjoin_np(t,NULL)) {
-    if(e->should_quit(e)) {
-      assert(0==pthread_cancel(t));
-      R e->make_string(e,"",0);
+    if(flag && e->should_quit(e)) {
+      adadbreak += 1;
+      flag--;
     }
     nanosleep(&delay,NULL);
   }
-  //  pthread_join (t,NULL); // todo e->should_quit stuff
   EV r = e->make_string(e,je.out,strlen(je.out));
   free(je.speech);free(je.out);
   R r;
