@@ -6,6 +6,8 @@
 (require 'popup)
 (require 'browse-url)
 (require 'filenotify)
+(require 'pdf-tools)
+(require 's)
 
 ;;;; group
 (defgroup jpl-mode nil
@@ -26,6 +28,11 @@
 
 (defcustom j-viewmat-png
   "~/j902-user/temp/viewmat.png"
+  "viewmat file"
+  :group 'jpl)
+
+(defcustom j-plot-pdf
+  "~/j902-user/temp/plot.pdf"
   "viewmat file"
   :group 'jpl)
 
@@ -56,7 +63,9 @@ the user pointer finalizer specified in the dynamic module?"
 	    (when (and j (equal engine (cdr (assq 'engine j))))
 	      (kill-buffer (cdr (assq 'out j)))
 	      (remhash buffer jpl-place->j))))
-	(hash-table-keys jpl-place->j)))
+	(hash-table-keys jpl-place->j))
+  ;; memory leak!
+  )
 
 (defun jpl-delete-buffer-engine ()
   "Delete any references to engine associated with current
@@ -90,24 +99,39 @@ containing the `speech' or as a single sentence if `nil'."
 				 "0!:100" "0!:101" "0!:110" "0!:111"
 				 "0!:2" "0!:3" nil))
     (error "j-eval invalid `foreign-verb'" foreign-verb))
-  (j-getr-threaded J
-	  (if (null foreign-verb)
-	      speech
-	    (concat foreign-verb
-		    " < '"
-		    (make-temp-file "jpl/" nil nil speech)
-		    "'"))))
+  (let* ((input-temp (make-temp-file "jpl" nil nil speech))
+	 (result (j-getr J
+			 (if (null foreign-verb)
+			     speech
+			   (concat foreign-verb
+				   " < '"
+				   input-temp
+				   "'")))))
+    (delete-file input-temp)
+    result))
+
+(defun j-local/global-engine ()
+  "get user pointer for J engine associated with current buffer
+or the global J engine if there is none."
+  (let ((J (gethash (buffer-file-name) jpl-place->j)))
+    (if J (cdr (assq 'engine J))
+      (jpl-check-wwj)
+      (cdr (assq 'engine (gethash "~" jpl-place->j))))))
 
 (defun j-over-mini (sentence)
-  "execute J sentence from mini buffer with global J instance"
+  "execute J sentence from mini buffer. the global J instance
+will be used unless the current buffer has its own."
   (interactive "sJ: ")
   (jpl-check-wwj)
-  (let ((vm0 (file-attributes j-viewmat-png)))
-    (display-message-or-buffer
-     (j-eval (cdr (assq 'engine (gethash "~" jpl-place->j)))
-	     sentence))
-    (unless (equal vm0 (file-attributes j-viewmat-png))
-      (j-viewmat))))
+  (let ((engine (j-local/global-engine))
+	(vm0 (file-attributes j-viewmat-png))
+	(pl0 (file-attributes j-plot-pdf)))
+    (display-message-or-buffer (j-eval engine sentence))
+    (when (window-system)
+      (unless (equal vm0 (file-attributes j-viewmat-png))
+	(j-viewmat))
+      (unless (equal pl0 (file-attributes j-plot-pdf))
+	(j-plot)))))
 
 (defun j-over-region (a b)
   "Send region to J"
@@ -116,15 +140,19 @@ containing the `speech' or as a single sentence if `nil'."
 	 (J (gethash where jpl-place->j))
 	 (engine (cdr (assq 'engine J)))
 	 (out (assq 'out J))
-	 (vm0 (file-attributes j-viewmat-png)))
+	 (vm0 (file-attributes j-viewmat-png))
+	 (pl0 (file-attributes j-plot-pdf)))
     (cond (J
 	   (let ((sentences (buffer-substring-no-properties a b)))
 	     (j-getr engine (concat "1!:44 '" default-directory "'"))
 	     (pop-to-buffer (cdr out))
 	     (goto-char (point-max))
 	     (insert (j-eval engine sentences "0!:1"))
-	     (unless (equal vm0 (file-attributes j-viewmat-png))
-	       (j-viewmat))
+	     (when (window-system)
+	       (unless (equal vm0 (file-attributes j-viewmat-png))
+		 (j-viewmat))
+	       (unless (equal pl0 (file-attributes j-plot-pdf))
+		 (j-plot)))
 	     (other-window 1)))
 	  (t (j-create-instance where) (j-over-region a b)))))
 
@@ -133,6 +161,14 @@ containing the `speech' or as a single sentence if `nil'."
   (interactive)
   (let ((t0 (current-time)))
     (j-over-region (point-at-bol) (point-at-eol))
+    (princ (format "[jpl] dt : %fs"
+		   (float-time (time-subtract (current-time) t0))))))
+
+(defun j-over-below-point ()
+  "Send buffer below current point to J"
+  (interactive)
+  (let ((t0 (current-time)))
+    (j-over-region (point) (point-max))
     (princ (format "[jpl] dt : %fs"
 		   (float-time (time-subtract (current-time) t0))))))
 
@@ -145,29 +181,42 @@ containing the `speech' or as a single sentence if `nil'."
 		   (float-time (time-subtract (current-time) t0))))))
 
 ;;;; documentation
+(defun j-nuvoc-speech (entity)
+  "Get the speech of a given J entity of the `j-nuvoc'"
+  (cdadr entity))
+
 (defun j-find-thing (thing)
-  "Find information about thing (exact match)"
+  "Find information about `thing' (exact match)"
   (interactive "sthing: ")
-  (seq-find #'(lambda (jentity)
-                (member thing (cdadr jentity)))
+  (seq-find #'(lambda (entity)
+                (member thing (j-nuvoc-speech entity)))
             j-nuvoc))
 
-(defun j-urls (thing)
-  "Look up urls related to a thing (exact match)"
-  (let ((entity (j-find-thing thing)))
-    (if entity
-        (seq-map #'(lambda (info)
-                     ;; guaranteed fields
-                     (append (cdr (assoc 'description (cdr info)))
-                             (cdr (assoc 'url (cdr info)))))
-                 (seq-filter #'(lambda (kv)
-                                 (equal (car kv) 'info))
-                             (cdr entity)))
-      nil)))
+(defun j-find-things (thing)
+  "Find information about `thing' (fuzzy matches)"
+  (interactive "sthing: ")
+  (seq-filter #'(lambda (entity)
+		  (seq-find #'(lambda (tok)
+				(s-contains? thing tok))
+			    (j-nuvoc-speech entity)))
+              j-nuvoc))
 
-(defun j-names (thing)
-  "Look up english names for thing"
-  (seq-map #'car (j-urls thing)))
+(defun j-urls (speech)
+  "Look up urls related to a string of `speech' (exact match)"
+  (seq-map #'(lambda (info)
+               ;; guaranteed fields
+               (append (cdr (assoc 'description (cdr info)))
+                       (cdr (assoc 'url (cdr info)))))
+	   (apply 'append
+		  (seq-map #'(lambda (entity)
+			       (seq-filter #'(lambda (kv)
+					       (equal (car kv) 'info))
+					   (cdr entity)))
+			   (j-find-things speech)))))
+
+(defun j-names (speech)
+  "Look up english names for `speech'"
+  (seq-map #'car (j-urls speech)))
 
 (defun joogle (thing)
   "Present a popup with links to information about thing"
@@ -177,15 +226,21 @@ containing the `speech' or as a single sentence if `nil'."
 					    :value
 					    (seq-elt url 1)))
                        (j-urls thing))))
-    (when urls
-      (browse-url (popup-menu* urls)))))
+    (if urls
+	(browse-url (popup-menu* urls))
+      (princ (format "JOOGLE: no matches for '%s'" thing)))))
 
 (defun j-docs ()
   "only works on my guix when j-docs-help addon is present"
   (interactive)
   (browse-url j-docs-help-index))
 
-;;;; viewmat
+(defun j-open-nuvoc ()
+  "open the nuvoc in the browser"
+  (interactive)
+  (browse-url "https://code.jsoftware.com/wiki/NuVoc"))
+
+;;;; viewmat & plot
 (defun j-viewmat ()
   "open and view a viewmat image"
   (when (buffer-live-p j-viewmat-buffer)
@@ -196,15 +251,41 @@ containing the `speech' or as a single sentence if `nil'."
     (insert-image-file j-viewmat-png))
   (view-buffer j-viewmat-buffer))
 
-;; probably want `make-process' with argument `:command' as `nil'?
-;;;; evaluation
+(defun j-plot ()
+  "open and view a plot"
+  ;; prevent j from opening plot in system call
+  ;; https://www.emacswiki.org/emacs/YesOrNoP
+  (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest args) t))
+            ((symbol-function 'y-or-n-p) (lambda (&rest args) t)))
+    (find-file j-plot-pdf)
+    (pdf-view-redisplay)))
+
+(defun j-save-plot (output-file)
+  "save the most recent `j-plot-pdf' as a png in the given
+`output-file'"
+  (interactive)
+  (save-excursion
+    (cl-letf (((symbol-function 'read-file-name)
+	       (lambda (&rest args) output-file)))
+      (let ((b (find-file j-plot-pdf)))
+	(pdf-view-redisplay)
+	(image-save)
+	(kill-buffer b)))))
+
+(defun j-save-viewmat (output-file)
+  "save the most recent `j-plot-pdf' as a png in the given
+`output-file'"
+  (interactive)
+  (copy-file j-viewmat-png output-file t))
 
 ;;;; mode
 (defvar jpl-mode-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c c") 'j-over-buffer)
+    (define-key map (kbd "C-c b") 'j-over-below-point)
     (define-key map (kbd "C-c l") 'j-over-line)
     (define-key map (kbd "C-c i") 'j-docs)
+    (define-key map (kbd "C-c n") 'j-open-nuvoc)
     (define-key map (kbd "C-c j") 'joogle)
     (define-key map (kbd "M-p")   'prettify-symbols-mode)
     (define-key map (kbd "C-c k") 'jpl-delete-buffer-engine)
@@ -219,14 +300,11 @@ containing the `speech' or as a single sentence if `nil'."
 	prettify-symbols-alist j->apl) ;; (pretty-add-keywords nil j->apl)
   (use-local-map jpl-mode-keymap))
 
-(let ((/tmp/jpl (concat (temporary-file-directory) "jpl")))
-  (unless (file-exists-p /tmp/jpl)
-    (mkdir /tmp/jpl))
-  (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . jpl-mode))
-  (global-set-key (kbd "M-j") 'j-over-mini)
-  (j-create-instance "~")
-  (setq comment-start "NB. "
-	commend-end ""))
+(add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . jpl-mode))
+(global-set-key (kbd "M-j") 'j-over-mini)
+(j-create-instance "~")
+(setq comment-start "NB. "
+      commend-end "")
 
 (defvar WWJ
   (cdr (assq 'engine (gethash "~" jpl-place->j)))
@@ -239,5 +317,3 @@ containing the `speech' or as a single sentence if `nil'."
     (set WWJ (cdr (assq 'engine (gethash "~" jpl-place->j))))))
 
 (provide 'jpl-mode)
-
-

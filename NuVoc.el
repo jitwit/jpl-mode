@@ -946,7 +946,7 @@
          (rank "_" "0 0")
          (url "https://code.jsoftware.com/wiki/Vocabulary/bdotu")
          (description "Verb Info (Obverse, Rank, Identity)")))
-    (J (Verb "C." "C.!.2") (monad-rank "1")
+    (J (Verb "C.") (monad-rank "1")
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/ccapdot")
          (description "Cycle-Direct"))
@@ -966,7 +966,7 @@
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/ddot")
          (description "Derivative")))
-    (J (Conjunction "u D." "m D.") (monad-rank "mu")
+    (J (Conjunction "D.") (monad-rank "mu")
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/dcapdot")
          (description "Derivative"))
@@ -1001,7 +1001,7 @@
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/fdot")
          (description "Fix")))
-    (J (Conjunction "F. F.. F.:" "F: F:. F::")
+    (J (Conjunction "F." "F.." " F.:" "F:" " F:." " F::")
        (info
          (valence monad)
          (rank "_")
@@ -1231,7 +1231,7 @@
          (rank "_ _")
          (url "https://code.jsoftware.com/wiki/Vocabulary/zeroco")
          (description "Constant Functions")))
-    (J (Conjunction (i (tt "u v")))
+    (J (Conjunction "u v")
        (info
          (valence monad)
          (rank "_")
@@ -1242,7 +1242,7 @@
          (rank "_ _")
          (url "https://code.jsoftware.com/wiki/Vocabulary/hook")
          (description "Hook")))
-    (J (Conjunction (i (tt "f g h")))
+    (J (Conjunction "f g h")
        (info
          (valence monad)
          (rank "_")
@@ -1253,7 +1253,7 @@
          (rank "_ _")
          (url "https://code.jsoftware.com/wiki/Vocabulary/fork")
          (description "Fork")))
-    (J (Verb "u." "v.")
+    (J (Verb "u.")
        (info
          (valence monad)
          (rank "_")
@@ -1264,7 +1264,18 @@
          (rank "_ _")
          (url "https://code.jsoftware.com/wiki/Vocabulary/udot")
          (description "Enhanced Operand")))
-    (J (Control (span (\x40; (id "controls"))) "assert.")
+    (J (Verb "v.")
+       (info
+         (valence monad)
+         (rank "_")
+         (url "https://code.jsoftware.com/wiki/Vocabulary/udot")
+         (description "Enhanced Operand"))
+       (info
+         (valence dyad)
+         (rank "_ _")
+         (url "https://code.jsoftware.com/wiki/Vocabulary/udot")
+         (description "Enhanced Operand")))
+    (J (Control "assert.")
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/assertdot")
          (description "Assertion")))
@@ -1280,11 +1291,11 @@
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/elsedot")
          (description "Execute alternative")))
-    (J (Control "for." "for_ijk.")
+    (J (Control "for.")
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/fordot")
          (description "Repeat for each item")))
-    (J (Control "goto_lbl." "label_lbl.")
+    (J (Control "goto." "label.")
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/gotodot")
          (description "Go to label")))
@@ -1300,6 +1311,10 @@
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/selectdot")
          (description "Select among alternatives")))
+    (J (Control "select." "case." "fcase.")
+       (info
+         (url "https://code.jsoftware.com/wiki/Vocabulary/selectdot")
+         (description "Select among alternatives")))
     (J (Control "throw.")
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/throwdot")
@@ -1308,7 +1323,7 @@
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/trydot")
          (description "Execute, catching errors"))))
-  "The J NuVoc"))))
+  "The J NuVoc")
 
 (provide 'NuVoc)
 

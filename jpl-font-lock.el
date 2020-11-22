@@ -3,6 +3,8 @@
   :group 'jpl
   :prefix "j-font-lock-")
 
+;;; hah maybe look to:
+;;; https://filmschoolrejects.com/colors-jean-luc-godard/
 (defvar j-verb-face
   (defface j-verb-face
     `((t (:foreground "#117EFF")))
@@ -50,6 +52,13 @@
   (defface j-control-face
     `((t (:foreground "#484848"))) ; 21184E
     "whilst."
+    :group 'jpl-font-lock))
+
+(defvar j-atom-face
+  (defface j-atom-face
+    ;; "#FFAAFF" 13303B
+    `((t (:foreground "#10319B")))
+    "_1.2 2p1 3r2j1 ; 'bytes'"
     :group 'jpl-font-lock))
 
 ;    ("/\."      . ?⌿)    
@@ -114,9 +123,9 @@
     (modify-syntax-entry ?\= "-" table)
     (modify-syntax-entry ?\( "-" table)
     (modify-syntax-entry ?\) "-" table)
-    (modify-syntax-entry ?\' "." table)
+    ;; maybe should be string delim? need to fix comments if so
+    ; (modify-syntax-entry ?\' "." table)
     (modify-syntax-entry ?\, "-" table)
-;    (modify-syntax-entry ?\. "-" table)
     (modify-syntax-entry ?\# "-" table)
     (modify-syntax-entry ?\& "-" table)
     (modify-syntax-entry ?\/ "-" table)
@@ -124,18 +133,18 @@
     (modify-syntax-entry ?\~ "-" table)
     (modify-syntax-entry ?\: "-" table)
     (modify-syntax-entry ?\- "-" table)
+    (modify-syntax-entry ?\_ "w" table)
     (modify-syntax-entry ?\@ "-" table)
     (modify-syntax-entry ?\$ "-" table)
     (modify-syntax-entry ?\{ "-" table)
     (modify-syntax-entry ?\} "-" table)
     (modify-syntax-entry ?\< "-" table)
     (modify-syntax-entry ?\> "-" table)
-    (modify-syntax-entry ?\n "-" table)
-    (modify-syntax-entry ?\r "-" table)
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?\r ">" table)
+;    (modify-syntax-entry ?\. "-" table)
     table)
   "Syntax table for j-mode")
-
-(defvar j-font-lock-constants '())
 
 (defvar j-controls
   '("assert."  "break."  "continue."  "while."  "whilst."  "for."  "do."  "end."
@@ -145,7 +154,7 @@
 (defvar j-verb-3
   '("_1:" "_2:" "_3:" "_4:" "_5:" "_6:" "_7:" "_8:" "_9:" "_0:" "p.." "{::"))
 (defvar j-conj-3
-  '("&.:"))
+  '("&.:" "F:." "F::" "F.." "F.:"))
 (defvar j-noun-2
   '("_." "a." "a:"))
 (defvar j-verb-2
@@ -153,29 +162,46 @@
     "x:" "u:" "s:" "r." "q:" "p:" "p." "o." "L." "j." "I." "i:" "i." "E." "e."
     "C." "A." "?." "\":" "}:" "}." "{:" "{." "[:" "/:" "\\:" "#:" "#." ";:" ",:"
     ",." "|:" "|." "~:" "~." "$:" "$." "^." "%:" "%." "-:" "-." "*:" "*."  "+:"
-    "+." ">:" ">." "<:" "<." "\"."))
+    "+." ">:" ">." "<:" "<." "\"." "Z:"))
 (defvar j-adv-2
   '(;; sadly, "t:" "t."
     "M." "f." "b." "/." "\\."))
 (defvar j-conj-2
   '(; sadly: "T." "D:" "D." "d."
-    "S:" "L:" "H." 
+    "S:" "L:" "H." "F:" "F."
     "&:" "&." "@:" "@." "`:" "!:" "!." ";."
     "::" ":." ".:" ".." "^:"))
-
 (defvar j-adv-1
-  '("}" "." "\\" "/" "~"))
+  '("}" "\\" "/" "~"))
 (defvar j-verb-1
   '("?" "{" "]" "[" "!" "#" ";" "," "|" "$" "^" "%" "-" "*" "+" ">" "<" "="))
 (defvar j-conj-1
-  '("&" "@" "`" "\"" ":" "."))
+  '("&" "@" "`" "\"" ":"))
+;; nb. based numbers (b) can have a-z for bases 10 < b <= 36
+(defvar j-numeric-constant
+  `(rx bow
+       (or (seq (? "_")
+		(+ digit)
+		(? (or (seq
+			(? "." (+ digit)) ;; to allow ending x to mean exact
+			(? (seq (or "e" "ad" "ar" "j" "r" "p" "x" "b")
+				(? "_")
+				(+ digit)
+				(? "." (+ digit))
+				;; no "b" here?
+				(? (seq (or "e" "ad" "ar" "j" "r" "p" "x" "b")
+					(? "_")
+					(+ digit)
+					(? "." (+ digit))
+					(? (seq (or "e" "ad" "ar" "j" "r" "p" "x" "b")
+						(? "_")
+						(+ digit)
+						(? "." (+ digit)))))))))
+		       "x")))
+	   "_"
+	   "__")))
 
-(setq j-comment-rx
-      (rx "NB." (* not-newline)))
-
-(setq j-explicit
-      (rx (or "13" "1" "2" "3" "4")
-	  (+ " ") ":" (* " ")))
+;; (defvar j-explicit (rx (or "13" "1" "2" "3" "4") (+ " ") ":" (* " ")))
 
 ; https://code.jsoftware.com/wiki/Vocabulary/Words#Words
 ; note: fixme only one consecutive _ allowed!
@@ -184,8 +210,10 @@
 
 (defvar j-font-locks
   `((
-     ;; one day: multiline strings and inline explicit defs
-     (,(rx "NB." (* not-newline))     . font-lock-comment-face)
+     ;; NB! ' NB. ' gets grabbed as comment!
+     (,(rx "NB." (* not-newline))         . font-lock-comment-face)
+     (,(rx "{{")                          . j-is-face)
+     (,(rx "}}")                          . j-is-face)
      (,(rx (or (submatch-n 1 (eval j-identifier))
 	       (seq "'" (submatch-n 1
 				    (seq (eval j-identifier)
@@ -201,17 +229,21 @@
       (1 j-control-face)
       (2 j-is-face)
       (3 j-control-face))
-     (,(rx "'" (* (not "'")) "'")     . j-string-face)
-     (,(rx (eval `(or ,@j-controls))) . j-control-face)
-     (,(rx (eval `(or ,@j-conj-3)))   . j-conjunction-face)
-     (,(rx (eval `(or ,@j-verb-3)))   . j-verb-face)
-     (,(rx (eval `(or ,@j-noun-2)))   . j-noun-face)
-     (,(rx (eval `(or ,@j-adv-2)))    . j-adverb-face)
-     (,(rx (eval `(or ,@j-conj-2)))   . j-conjunction-face)
-     (,(rx (eval `(or ,@j-verb-2)))   . j-verb-face)
-     (,(rx (eval `(or ,@j-verb-1)))   . j-verb-face)
-     (,(rx (eval `(or ,@j-conj-1)))   . j-conjunction-face)
-     (,(rx (eval `(or ,@j-adv-1)))    . j-adverb-face)))
+     (,(rx "'" (* (not (any "'\n"))) "'") . j-string-face)
+     (,(rx (eval `(or ,@j-controls)))     . j-control-face)
+     (,(rx (eval `(or ,@j-conj-3)))       . j-conjunction-face)
+     (,(rx (eval `(or ,@j-verb-3)))       . j-verb-face)
+     (,(rx (eval `(or ,@j-noun-2)))       . j-noun-face)
+     (,(rx (eval `(or ,@j-adv-2)))        . j-adverb-face)
+     (,(rx (eval `(or ,@j-conj-2)))       . j-conjunction-face)
+     (,(rx (eval `(or ,@j-verb-2)))       . j-verb-face)
+     (,(rx (eval `(or ,@j-verb-1)))       . j-verb-face)
+     (,(rx (eval `(or ,@j-conj-1)))       . j-conjunction-face)
+     (,(rx (eval `(or ,@j-adv-1)))        . j-adverb-face)
+     ;; kludge				  
+     (,(eval j-numeric-constant)          . j-atom-face)
+     (,(rx ".")                           . j-conjunction-face)
+     ))
   "J Mode font lock keys words")
 
 (provide 'jpl-font-lock)
