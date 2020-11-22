@@ -24,8 +24,4 @@ are many ways it sucks, so I'd caution others against using it.
   <kbd>M-j</kbd>
 
 * Warnings
-- if J segfaults, so does emacs.
-- if your J segfaults, so does emacs.
-- if your J has an infinite loop, there's no escape. actually, the
-  escape seems to work from the terminal but not from an x-windows
-  emacs (draft in branch d)
+- J or your J can cause segfaults (wip)!
