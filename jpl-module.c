@@ -19,9 +19,9 @@ typedef struct {J j; C* speech; C*out;} JE;
 int plugin_is_GPL_compatible;
 static C **adadbreak;
 static JDT jdo;static JFT jfree;static JIT jinit;static JSXT jsmx;static JGT jgetr;
-static J gj; static C* gin; static C* gout;static C **adadbreak;
-static void sigint(int k){**adadbreak+=1;signal(SIGINT,sigint);}
-//static void sigint2(int k){**adadbreak+=1;}
+static C **adadbreak;
+// jconsole uses signals:
+// static void sigint(int k){**adadbreak+=1;signal(SIGINT,sigint);}
 static C* estring(EE* e, EV s)
 { DP sz=0;e->copy_string_contents(e,s,NULL,&sz);C *es=malloc(sz);
   e->copy_string_contents(e,s,es,&sz); R es; }
