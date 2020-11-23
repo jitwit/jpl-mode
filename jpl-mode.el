@@ -76,9 +76,8 @@ the user pointer finalizer specified in the dynamic module?"
 	 (jpl-delete-instance (cdr (assq 'engine engine)))
 	 t)))
 
-;; j instances should have J engine, home directory, optionally:
-;; project main, project test... maybe should just learn projectile
-;; (or similar)?
+;; j instances should have J engine, working directory. should look
+;; for manifest.ijs?
 (defun j-create-instance (where)
   "associate a location with a J, unless already associated"
   (unless (gethash where jpl-place->j)
@@ -266,7 +265,9 @@ will be used unless the current buffer has its own."
   (interactive)
   (save-excursion
     (cl-letf (((symbol-function 'read-file-name)
-	       (lambda (&rest args) output-file)))
+	       (lambda (&rest args) output-file))
+	      ((symbol-function 'yes-or-no-p) (lambda (&rest args) t))
+              ((symbol-function 'y-or-n-p) (lambda (&rest args) t)))
       (let ((b (find-file j-plot-pdf)))
 	(pdf-view-redisplay)
 	(image-save)
