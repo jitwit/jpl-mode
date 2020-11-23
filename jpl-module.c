@@ -41,7 +41,8 @@ static V* jdoit (V*a) {
 EFUN(jeval)
 { JE je = {e->get_user_ptr(e,a[0]),estring(e,a[1]),NULL};
   pthread_t t;pthread_create (&t,NULL,jdoit,(V*)&je);
-  struct timespec delay = {0,1000*1000};
+  // *5 seems to prevent crashes from eg using require vs load
+  struct timespec delay = {0,1000*1000*5};
   int flag=1;
   adadbreak = (C**) je.j;
   while(pthread_tryjoin_np(t,NULL)) {
