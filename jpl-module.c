@@ -51,21 +51,19 @@ EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
 EFUN(jegetm) // nasty mess for now
-{ J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);TI(pt);TI(pr);TI(ps);TI(pd);
+{ J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);I jt,jr,js,jd;
   EV cons = e->intern(e,"cons"); EV ed = e->intern(e,"nil"); EV ea[2];
-  jgetm(j,v,pt,pr,ps,pd); I c=cardinality(pr[0],ps[0]);
-  if (pt[0]==2) { // jlit
-    ea[0]=jcopys(e,c,pd[0]);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
-  } else if (pt[0]==4) { // jint
-    ea[0]=jcopyi(e,c,pd[0]);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
-  } else if (pt[0]==8) { // jfloat
-    ea[0]=jcopyf(e,c,pd[0]);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
+  jgetm(j,v,&jt,&jr,&js,&jd); I c=cardinality(jr,js);
+  if (jt==2) { // jlit
+    ea[0]=jcopys(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
+  } else if (jt==4) { // jint
+    ea[0]=jcopyi(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
+  } else if (jt==8) { // jfloat
+    ea[0]=jcopyf(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
   } else {
-    ea[0] = e->make_string(e,"todo",4);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
+    ea[0]=e->make_string(e,"todo",4);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
   }
-  ea[0]=jcopyi(e,pr[0],ps[0]);ea[1]=ed;ed=e->funcall(e,cons,2,ea); // shape
-  free(pt);free(pr);free(ps);free(pd);
-  R ed; }
+  ea[0]=jcopyi(e,jr,js);ea[1]=ed;ed=e->funcall(e,cons,2,ea);R ed; }
 
 int emacs_module_init (ERT* rt)
 { EE* e = rt->get_environment(rt); EV a[2]; V* lj = dlopen(LIBJ,RTLD_LAZY);
