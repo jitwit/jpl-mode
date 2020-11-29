@@ -44,13 +44,17 @@ EFUN(jegetr)
 EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
-EFUN(jegetm) // only shape for now
+EFUN(jegetm) // nasty mess for now
 { J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);TI(pt);TI(pr);TI(ps);TI(pd);
   EV cons = e->intern(e,"cons"); EV ed = e->intern(e,"nil"); EV ea[2];
   jgetm(j,v,pt,pr,ps,pd);
   I *sh = jcpyi(ps[0],pr[0]), c=card(pr[0],sh),i;
-  if(pt[0]==4) {
-    I*dat=jcpyf(pd[0],c);
+  if(pt[0]==2&&pr[0]==1) { // rank 1 strings to real emacs strings for now
+    C*dat=jcpys(pd[0],c);
+    ea[0] = e->make_string(e,dat,c);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
+    free(dat);
+  } else if(pt[0]==4) {
+    I*dat=jcpyi(pd[0],c);
     for(i=c-1;i>=0;i--) {
       ea[0] = e->make_integer(e,dat[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
     }
