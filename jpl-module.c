@@ -60,7 +60,7 @@ EFUN(jegetm) // nasty mess for now
   else if (jt==2) a[1]=jcopys(e,c,jd);
   else if (jt==4) a[1]=jcopyi(e,c,jd);
   else if (jt==8) a[1]=jcopyf(e,c,jd);
-  else            a[1]=e->make_string(e,"todo",4);
+  else            a[1]=e->intern(e,"nil"); // more cases to come
   a[0]=jcopyi(e,jr,js); R e->funcall(e,cons,2,a); }
 
 int emacs_module_init (ERT* rt)
