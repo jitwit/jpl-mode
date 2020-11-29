@@ -5,9 +5,7 @@
 (require 'jpl-mode)
 
 (defun fake-test ()
-  (j-over-mini "echo JVERSION [ require 'viewmat'")
-  (j-do WWJ "f =: [: (,\"_1/)^:2 (3 3 $ 1 0)&(*\"0 _)")
-  (j-do WWJ "((,: 255&-) ? 3 $ 256) viewmat (f ^: 4) 1"))
+  (j-over-mini "arr =: i. 2 2 2")
+  (j->emacs WWJ "arr"))
 
 (fake-test)
-(j-viewmat)

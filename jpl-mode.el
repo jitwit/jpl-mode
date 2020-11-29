@@ -109,6 +109,10 @@ containing the `speech' or as a single sentence if `nil'."
     (delete-file input-temp)
     result))
 
+(defun j->emacs (J variable)
+  (interactive)
+  (j-getm J variable))
+
 (defun j-local/global-engine ()
   "get user pointer for J engine associated with current buffer
 or the global J engine if there is none."
