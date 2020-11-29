@@ -109,12 +109,18 @@ containing the `speech' or as a single sentence if `nil'."
     (delete-file input-temp)
     result))
 
+(defun chop-seq (data n)
+  (seq-mapn (lambda (j)
+	      (seq-subseq data j (+ n j)))
+	    (number-sequence 0 (- (/ (length data) n)
+				  1))))
+
 (defun jval->eval (value)
   (let ((rank (car value))
 	(data (cdr value)))
     (cond
-     ((stringp data)
-      (if (= 1 (length rank)) data value))
+     ((= 1 (length rank)) data)         ;; vector
+     ((= 0 (length rank)) (elt data 0)) ;; scalar
      (t value))))
 
 (defun J->emacs (J variable)

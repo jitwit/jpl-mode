@@ -15,7 +15,6 @@ typedef int (*JGMT)(J,C*,I*,I*,I*,I*);
 typedef emacs_value EV;typedef emacs_env EE;typedef struct emacs_runtime ERT;
 
 #define EFUN(f) static EV f(EE*e,DP n,EV*a,V*d)
-#define TI(v) I*v=malloc(sizeof(I)*1)
 #define DO(n,x) {I i=0,_i=(n);for(;i<_i;++i){x;}}
 
 static JDT jdo;static JFT jfree;static JIT jinit;static JSXT jsmx;

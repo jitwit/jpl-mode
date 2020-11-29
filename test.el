@@ -10,10 +10,12 @@
   (j-over-mini "vi =: i. 2 2 2")
   (j-over-mini "vf =: %: i. 3 2")
   (j-over-mini "vc =: j./~ i:1")
+  (j-over-mini "vsc =: 1p1")
   (list (J->emacs WWJ "vb")
 	(J->emacs WWJ "vs")
 	(J->emacs WWJ "vi")
 	(J->emacs WWJ "vf")
-	(J->emacs WWJ "vc")))
+	(J->emacs WWJ "vc")
+	(J->emacs WWJ "vsc")))
 
 (fake-test)
