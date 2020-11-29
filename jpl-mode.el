@@ -90,14 +90,14 @@ the user pointer finalizer specified in the dynamic module?"
 		 (out . ,out))
 	       jpl-place->j))))
 
-(defun j-eval (J speech &optional foreign-verb)
+(defun j-script (J speech &optional foreign-verb)
   "have `J' interpret given `speech', using a given
 `foreign-verb' such as 0!:0 or 0!:1 on a temporary file
 containing the `speech' or as a single sentence if `nil'."
   (unless (member foreign-verb '("0!:0" "0!:1" "0!:2" "0!:10" "0!:11"
 				 "0!:100" "0!:101" "0!:110" "0!:111"
 				 "0!:2" "0!:3" nil))
-    (error "j-eval invalid `foreign-verb'" foreign-verb))
+    (error "j-script invalid `foreign-verb'" foreign-verb))
   (let* ((input-temp (make-temp-file "jpl" nil nil speech))
 	 (result (j-getr J
 			 (if (null foreign-verb)
@@ -112,7 +112,7 @@ containing the `speech' or as a single sentence if `nil'."
 (defun chop-seq (n data)
   (vconcat
    (seq-mapn (lambda (j)
-	       (seq-subseq data j (+ n j)))
+	       (seq-subseq data (* n j) (* n (+ j 1))))
 	     (number-sequence 0 (- (/ (length data) n)
 				   1)))))
 
@@ -126,12 +126,15 @@ containing the `speech' or as a single sentence if `nil'."
 	(data (cdr value)))
     (if (= 0 (length rank)) ;; treat scalars differently
 	(elt data 0)
-      (j-chop (reverse (cdr (append rank nil))) data))))
+      (j-chop (reverse (cdr (append rank nil)))
+	      data))))
 
 (defun J->emacs (J variable)
-  "Bring data in `variable' living inside `J' to emacs"
-  (let ((v (j-getm J variable)))
-    (jval->eval v)))
+  "Bring data in `variable' living inside `J' engine to emacs"
+  (jval->eval (j-getm J variable)))
+
+(defun j-eval (J speech)
+  (j-do J speech))
 
 (defun j-local/global-engine ()
   "get user pointer for J engine associated with current buffer
@@ -149,7 +152,7 @@ will be used unless the current buffer has its own."
   (let ((engine (j-local/global-engine))
 	(vm0 (file-attributes j-viewmat-png))
 	(pl0 (file-attributes j-plot-pdf)))
-    (display-message-or-buffer (j-eval engine sentence))
+    (display-message-or-buffer (j-script engine sentence))
     (when (window-system)
       (unless (equal vm0 (file-attributes j-viewmat-png))
 	(j-viewmat))
@@ -170,7 +173,7 @@ will be used unless the current buffer has its own."
 	     (j-getr engine (concat "1!:44 '" default-directory "'"))
 	     (pop-to-buffer (cdr out))
 	     (goto-char (point-max))
-	     (insert (j-eval engine sentences "0!:1"))
+	     (insert (j-script engine sentences "0!:1"))
 	     (when (window-system)
 	       (unless (equal vm0 (file-attributes j-viewmat-png))
 		 (j-viewmat))

@@ -46,6 +46,9 @@ EFUN(jeinit)
 { R e->make_user_ptr(e,(V*)jfree,jinit()); }
 EFUN(jefree)
 { J j=e->get_user_ptr(e,a[0]); jfree(j); R e->make_integer(e,0); }
+EFUN(jedo)
+{ J j=e->get_user_ptr(e,a[0]);C*s=estring(e,a[1]);
+  I r=jdo(j,s);free(s);R e->make_integer(e,r); }
 EFUN(jegetr)
 { J j=e->get_user_ptr(e,a[0]);C*s=estring(e,a[1]);jdo(j,s);free(s);
   C*r=jgetr(j);R e->make_string(e,r,strlen(r)); }
@@ -73,7 +76,10 @@ int emacs_module_init (ERT* rt)
   a[1] = e->make_function(e,0,0,jeinit,"Create a J engine",NULL);
   a[0] = e->intern(e,"j-engine"); e->funcall(e,fset,2,a);
 
-  a[1] = e->make_function(e,2,2,jegetr,"Execute a J sentence",NULL);
+  a[1] = e->make_function(e,2,2,jedo,"Execute a J sentence",NULL);
+  a[0] = e->intern(e,"j-do"); e->funcall(e,fset,2,a);
+
+  a[1] = e->make_function(e,2,2,jegetr,"Execute a J sentence & grab output",NULL);
   a[0] = e->intern(e,"j-getr"); e->funcall(e,fset,2,a);
 
   a[1] = e->make_function(e,2,2,jegetm,"J value -> emacs value",NULL);
