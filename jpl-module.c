@@ -54,11 +54,13 @@ EFUN(jegetm) // only shape for now
     for(i=c-1;i>=0;i--) {
       ea[0] = e->make_integer(e,dat[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
     }
+    free(dat);
   } else if (pt[0]==8) {
     D*dat=jcpyf(pd[0],c);
     for(i=c-1;i>=0;i--) {
       ea[0] = e->make_float(e,dat[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
     }
+    free(dat);
   } else {
     ea[0] = e->make_string(e,"todo",4);ea[1] = ed; ed = e->funcall(e,cons,2,ea);    
   }
