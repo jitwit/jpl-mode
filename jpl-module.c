@@ -26,13 +26,19 @@ static C*estring(EE* e, EV s)
   C *es=malloc(sz); e->copy_string_contents(e,s,es,&sz); R es; }
 static V jputs (J j,int t,C*s)
 { if(MTYOEXIT==t) exit((int)(I)s); fputs(s,stdout); fflush(stdout); }
-static I*jcpyi (I p, I r)
-{ I*s = malloc(sizeof(I)*r); DO(r,s[i]=((I*)p)[i]);R s; }
-static C*jcpys (I p, I r)
-{ C*s = malloc(sizeof(C)*r); DO(r,s[i]=((C*)p)[i]);R s; }
-static D*jcpyf (I p, I r)
-{ D*s = malloc(sizeof(D)*r); DO(r,s[i]=((D*)p)[i]);R s; }
-static I card (I r,I*s) { I c=1;DO(r,c*=s[i]);R c; }
+static I cardinality (I r,I s) { I c=1;DO(r,c*=((I*)s)[i]);R c; }
+static EV blank_vector(EE*e,I c)
+{ EV a[2],vec=e->intern(e,"make-vector");
+  a[0]=e->make_integer(e,c);a[1]=e->make_integer(e,0);
+  R e->funcall(e,vec,2,a); }
+static EV jcopyi (EE*e,I r,I d)
+{ EV v = blank_vector(e,r);
+  DO(r,e->vec_set(e,v,i,e->make_integer(e,((I*)d)[i]))); R v; }
+static EV jcopyf (EE*e,I r,I d)
+{ EV v = blank_vector(e,r);
+  DO(r,e->vec_set(e,v,i,e->make_float(e,((D*)d)[i]))); R v; }
+static EV jcopys (EE*e,I r,I d)
+{ R e->make_string(e,(C*)d,r); }
 
 EFUN(jeinit)
 { R e->make_user_ptr(e,(V*)jfree,jinit()); }
@@ -47,31 +53,18 @@ EFUN(jesmx)
 EFUN(jegetm) // nasty mess for now
 { J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);TI(pt);TI(pr);TI(ps);TI(pd);
   EV cons = e->intern(e,"cons"); EV ed = e->intern(e,"nil"); EV ea[2];
-  jgetm(j,v,pt,pr,ps,pd);
-  I *sh = jcpyi(ps[0],pr[0]), c=card(pr[0],sh),i;
-  if(pt[0]==2&&pr[0]==1) { // rank 1 strings to real emacs strings for now
-    C*dat=jcpys(pd[0],c);
-    ea[0] = e->make_string(e,dat,c);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
-    free(dat);
-  } else if(pt[0]==4) {
-    I*dat=jcpyi(pd[0],c);
-    for(i=c-1;i>=0;i--) {
-      ea[0] = e->make_integer(e,dat[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
-    }
-    free(dat);
-  } else if (pt[0]==8) {
-    D*dat=jcpyf(pd[0],c);
-    for(i=c-1;i>=0;i--) {
-      ea[0] = e->make_float(e,dat[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
-    }
-    free(dat);
+  jgetm(j,v,pt,pr,ps,pd); I c=cardinality(pr[0],ps[0]);
+  if (pt[0]==2) { // jlit
+    ea[0]=jcopys(e,c,pd[0]);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
+  } else if (pt[0]==4) { // jint
+    ea[0]=jcopyi(e,c,pd[0]);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
+  } else if (pt[0]==8) { // jfloat
+    ea[0]=jcopyf(e,c,pd[0]);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
   } else {
-    ea[0] = e->make_string(e,"todo",4);ea[1] = ed; ed = e->funcall(e,cons,2,ea);    
+    ea[0] = e->make_string(e,"todo",4);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
   }
-  for(i=pr[0]-1;i>=0;i--) {
-    ea[0] = e->make_integer(e,sh[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
-  }
-  free(sh);free(pt);free(pr);free(ps);free(pd);
+  ea[0]=jcopyi(e,pr[0],ps[0]);ea[1]=ed;ed=e->funcall(e,cons,2,ea); // shape
+  free(pt);free(pr);free(ps);free(pd);
   R ed; }
 
 int emacs_module_init (ERT* rt)
