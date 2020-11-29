@@ -5,7 +5,7 @@
 (require 'jpl-mode)
 
 (defun fake-test ()
-  (j-over-mini "arr =: i. 2 10 2")
+  (j-over-mini "arr =: i. 2 4 3")
   (j->emacs WWJ "arr"))
 
 (fake-test)

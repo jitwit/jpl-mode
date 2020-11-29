@@ -8,7 +8,7 @@ int plugin_is_GPL_compatible;
 #define LIBJ "libj.so"
 #define MTYOEXIT 5 // see jlib.h
 
-typedef void V;typedef intmax_t I;typedef char C;typedef V* J;
+typedef void V;typedef intmax_t I;typedef char C;typedef double D;typedef V* J;
 typedef ptrdiff_t DP;typedef V* (*JIT)();typedef int (*JDT)(J,C*);
 typedef C* (*JGT)(J);typedef V* (*JFT)(J);typedef V* (*JSXT) (J,V*,V*,V*,V*,I);
 typedef int (*JGMT)(J,C*,I*,I*,I*,I*);
@@ -26,9 +26,13 @@ static C*estring(EE* e, EV s)
   C *es=malloc(sz); e->copy_string_contents(e,s,es,&sz); R es; }
 static V jputs (J j,int t,C*s)
 { if(MTYOEXIT==t) exit((int)(I)s); fputs(s,stdout); fflush(stdout); }
-static I*jcpy (I p, I r)
+static I*jcpyi (I p, I r)
 { I*s = malloc(sizeof(I)*r); DO(r,s[i]=((I*)p)[i]);R s; }
-static I cardinality (I r,I*s) { I c=1;DO(r,c*=s[i]);R c; }
+static C*jcpys (I p, I r)
+{ C*s = malloc(sizeof(C)*r); DO(r,s[i]=((C*)p)[i]);R s; }
+static D*jcpyf (I p, I r)
+{ D*s = malloc(sizeof(D)*r); DO(r,s[i]=((D*)p)[i]);R s; }
+static I card (I r,I*s) { I c=1;DO(r,c*=s[i]);R c; }
 
 EFUN(jeinit)
 { R e->make_user_ptr(e,(V*)jfree,jinit()); }
@@ -40,14 +44,13 @@ EFUN(jegetr)
 EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
-EFUN(jegetm) // only ints for now
+EFUN(jegetm) // only shape for now
 { J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);TI(pt);TI(pr);TI(ps);TI(pd);
   EV cons = e->intern(e,"cons"); EV ed = e->intern(e,"nil"); EV ea[2];
   jgetm(j,v,pt,pr,ps,pd);
-  I *sh = jcpy(ps[0],pr[0]), c=cardinality(pr[0],sh);
+  I *sh = jcpyi(ps[0],pr[0]), c=card(pr[0],sh);
   for(int i=pr[0]-1;i>=0;i--) {
-    ea[0] = e->make_integer(e,sh[i]);
-    ea[1] = ed;
+    ea[0] = e->make_integer(e,sh[i]);ea[1] = ed;
     ed = e->funcall(e,cons,2,ea);
   }
   free(sh);free(pt);free(pr);free(ps);free(pd);
