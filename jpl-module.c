@@ -34,6 +34,9 @@ static EV blank_vector(EE*e,I c)
 static EV jcopyi (EE*e,I r,I d)
 { EV v = blank_vector(e,r);
   DO(r,e->vec_set(e,v,i,e->make_integer(e,((I*)d)[i]))); R v; }
+static EV jcopyb (EE*e,I r,I d)
+{ EV v = blank_vector(e,r);
+  DO(r,e->vec_set(e,v,i,e->make_integer(e,(int)((C*)d)[i]))); R v; }
 static EV jcopyf (EE*e,I r,I d)
 { EV v = blank_vector(e,r);
   DO(r,e->vec_set(e,v,i,e->make_float(e,((D*)d)[i]))); R v; }
@@ -54,7 +57,9 @@ EFUN(jegetm) // nasty mess for now
 { J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);I jt,jr,js,jd;
   EV cons = e->intern(e,"cons"); EV ed = e->intern(e,"nil"); EV ea[2];
   jgetm(j,v,&jt,&jr,&js,&jd); I c=cardinality(jr,js);
-  if (jt==2) { // jlit
+  if (jt == 1) { // jbool, but as emacs ints
+    ea[0]=jcopyb(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
+  } else if (jt==2) { // jlit
     ea[0]=jcopys(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
   } else if (jt==4) { // jint
     ea[0]=jcopyi(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
