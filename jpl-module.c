@@ -15,7 +15,7 @@ typedef int (*JGMT)(J,C*,I*,I*,I*,I*);
 typedef emacs_value EV;typedef emacs_env EE;typedef struct emacs_runtime ERT;
 
 #define EFUN(f) static EV f(EE*e,DP n,EV*a,V*d)
-#define JTMP(v) I*v=malloc(sizeof(I)*1)
+#define TI(v) I*v=malloc(sizeof(I)*1)
 #define DO(n,x) {I i=0,_i=(n);for(;i<_i;++i){x;}}
 
 static JDT jdo;static JFT jfree;static JIT jinit;static JSXT jsmx;
@@ -26,7 +26,7 @@ static C*estring(EE* e, EV s)
   C *es=malloc(sz); e->copy_string_contents(e,s,es,&sz); R es; }
 static V jputs (J j,int t,C*s)
 { if(MTYOEXIT==t) exit((int)(I)s); fputs(s,stdout); fflush(stdout); }
-static I*jshape (I p, I r)
+static I*jcpy (I p, I r)
 { I*s = malloc(sizeof(I)*r); DO(r,s[i]=((I*)p)[i]);R s; }
 static I cardinality (I r,I*s) { I c=1;DO(r,c*=s[i]);R c; }
 
@@ -40,14 +40,19 @@ EFUN(jegetr)
 EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
-EFUN(jegetm)
-{ J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);
-  JTMP(pt);JTMP(pr);JTMP(ps);JTMP(pd);
+EFUN(jegetm) // only ints for now
+{ J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);TI(pt);TI(pr);TI(ps);TI(pd);
+  EV cons = e->intern(e,"cons"); EV ed = e->intern(e,"nil"); EV ea[2];
   jgetm(j,v,pt,pr,ps,pd);
-  I *sh = jshape(ps[0],pr[0]);
+  I *sh = jcpy(ps[0],pr[0]), c=cardinality(pr[0],sh);
+  for(int i=pr[0]-1;i>=0;i--) {
+    ea[0] = e->make_integer(e,sh[i]);
+    ea[1] = ed;
+    ed = e->funcall(e,cons,2,ea);
+  }
   free(sh);free(pt);free(pr);free(ps);free(pd);
-  R e->make_integer(e,0);
-}  
+  R ed; }
+
 int emacs_module_init (ERT* rt)
 { EE* e = rt->get_environment(rt); EV a[2]; V* lj = dlopen(LIBJ,RTLD_LAZY);
   jinit = (JIT)dlsym(lj,"JInit"); jdo = (JDT)dlsym(lj,"JDo");
