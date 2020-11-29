@@ -55,20 +55,14 @@ EFUN(jesmx)
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
 EFUN(jegetm) // nasty mess for now
 { J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);I jt,jr,js,jd;
-  EV cons = e->intern(e,"cons"); EV ed = e->intern(e,"nil"); EV ea[2];
+  EV cons = e->intern(e,"cons");
   jgetm(j,v,&jt,&jr,&js,&jd); I c=cardinality(jr,js);
-  if (jt == 1) { // jbool, but as emacs ints
-    ea[0]=jcopyb(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
-  } else if (jt==2) { // jlit
-    ea[0]=jcopys(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
-  } else if (jt==4) { // jint
-    ea[0]=jcopyi(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
-  } else if (jt==8) { // jfloat
-    ea[0]=jcopyf(e,c,jd);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
-  } else {
-    ea[0]=e->make_string(e,"todo",4);ea[1]=ed;ed=e->funcall(e,cons,2,ea);
-  }
-  ea[0]=jcopyi(e,jr,js);ea[1]=ed;ed=e->funcall(e,cons,2,ea);R ed; }
+  if      (jt==1) a[1]=jcopyb(e,c,jd);
+  else if (jt==2) a[1]=jcopys(e,c,jd);
+  else if (jt==4) a[1]=jcopyi(e,c,jd);
+  else if (jt==8) a[1]=jcopyf(e,c,jd);
+  else            a[1]=e->make_string(e,"todo",4);
+  a[0]=jcopyi(e,jr,js); R e->funcall(e,cons,2,a); }
 
 int emacs_module_init (ERT* rt)
 { EE* e = rt->get_environment(rt); EV a[2]; V* lj = dlopen(LIBJ,RTLD_LAZY);

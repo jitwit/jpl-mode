@@ -109,10 +109,18 @@ containing the `speech' or as a single sentence if `nil'."
     (delete-file input-temp)
     result))
 
+(defun jval->eval (value)
+  (let ((rank (car value))
+	(data (cdr value)))
+    (cond
+     ((stringp data)
+      (if (= 1 (length rank)) data value))
+     (t value))))
+
 (defun J->emacs (J variable)
+  "Bring data in `variable' living inside `J' to emacs"
   (let ((v (j-getm J variable)))
-    v
-    ))
+    (jval->eval v)))
 
 (defun j-local/global-engine ()
   "get user pointer for J engine associated with current buffer
