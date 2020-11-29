@@ -48,10 +48,22 @@ EFUN(jegetm) // only shape for now
 { J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);TI(pt);TI(pr);TI(ps);TI(pd);
   EV cons = e->intern(e,"cons"); EV ed = e->intern(e,"nil"); EV ea[2];
   jgetm(j,v,pt,pr,ps,pd);
-  I *sh = jcpyi(ps[0],pr[0]), c=card(pr[0],sh);
-  for(int i=pr[0]-1;i>=0;i--) {
-    ea[0] = e->make_integer(e,sh[i]);ea[1] = ed;
-    ed = e->funcall(e,cons,2,ea);
+  I *sh = jcpyi(ps[0],pr[0]), c=card(pr[0],sh),i;
+  if(pt[0]==4) {
+    I*dat=jcpyf(pd[0],c);
+    for(i=c-1;i>=0;i--) {
+      ea[0] = e->make_integer(e,dat[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
+    }
+  } else if (pt[0]==8) {
+    D*dat=jcpyf(pd[0],c);
+    for(i=c-1;i>=0;i--) {
+      ea[0] = e->make_float(e,dat[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
+    }
+  } else {
+    ea[0] = e->make_string(e,"todo",4);ea[1] = ed; ed = e->funcall(e,cons,2,ea);    
+  }
+  for(i=pr[0]-1;i>=0;i--) {
+    ea[0] = e->make_integer(e,sh[i]);ea[1] = ed; ed = e->funcall(e,cons,2,ea);
   }
   free(sh);free(pt);free(pr);free(ps);free(pd);
   R ed; }

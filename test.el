@@ -5,7 +5,11 @@
 (require 'jpl-mode)
 
 (defun fake-test ()
-  (j-over-mini "arr =: i. 2 4 3")
-  (j->emacs WWJ "arr"))
+  (j-over-mini "if =: i. 2 2 2")
+  (j-over-mini "vf =: %: i. 3 2")
+  (j-over-mini "vc =: j./~ i:1")
+  (list (j->emacs WWJ "if")
+	(j->emacs WWJ "vf")
+	(j->emacs WWJ "vc")))
 
 (fake-test)
