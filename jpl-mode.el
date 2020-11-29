@@ -110,6 +110,7 @@ containing the `speech' or as a single sentence if `nil'."
     result))
 
 (defun chop-seq (n data)
+  ;; use mapc?
   (vconcat
    (seq-mapn (lambda (j)
 	       (seq-subseq data (* n j) (* n (+ j 1))))
