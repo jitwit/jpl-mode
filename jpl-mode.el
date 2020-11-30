@@ -5,7 +5,6 @@
 (require 'NuVoc)
 (require 'popup)
 (require 'browse-url)
-(require 'filenotify)
 (require 'pdf-tools)
 (require 's)
 
