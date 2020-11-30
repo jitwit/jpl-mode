@@ -40,7 +40,11 @@
 		 (condition-case err
 		     (J->emacs WWJ "i_dont_exist")
 		   (jget-error err))))
-  )
+  (defj variable-defined-thru-J0 "i. 2 2")
+  (defj variable-defined-thru-J1 "a.{~65+i.5"
+    "another one")
+  (assert (equal variable-defined-thru-J0 '[[0 1] [2 3]]))
+  (assert (equal variable-defined-thru-J1 "ABCDE")))
 
 (simple-test)
 
