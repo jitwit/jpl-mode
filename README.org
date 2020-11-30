@@ -6,22 +6,24 @@ and org-babel interact. The code right now is usable for me but there
 are many ways it sucks, so I'd caution others against using it.
 
 * Lowlights
+- *J->emacs* & *emacs->J*: marshall data between J and emacs.
+- *calculator*: access J prompt in the mini bar through key binding
+  <kbd>M-j</kbd>.
+- *viewmat*: if the ~viewmat.png~ file changes from executing some J, a
+  buffer pops up to display it inside emacs.
+- *plot*: if the ~plot.pdf~ file changes from executing some J, the
+  buffer is opened and viewed through ~pdf-tools~.
+- *ob-jpl*: facilities for using ~jpl-mode~ in org mode.
+- *joogle*: emacs procedure that promps for a J token to look up and
+  opens the corresponding NuVoc page in a browser.
 - *font lock*: correctly classifies J tokens by verb, adverb,
   conjunction, and so on (j-mode misidentifies things like ~:~ and a
   few others) and adds a colors for nouns and names. Basically, with
   ~for_a. i. 10 do.~ font-lock will recognize that ~a~ is a binding
   and color it, bindings such as ~\'a b\'=. y~ don't get highlighted
   as strings, and things like ~a:~ and ~a.~ get their own color.
-- *viewmat*: if the ~viewmat.png~ file changes from executing some J, a
-  buffer pops up to display it inside emacs.
-- *plot*: if the ~plot.pdf~ file changes from executing some J, the
-  buffer is opened and viewed through ~pdf-tools~.
-- *joogle*: emacs procedure that promps for a J token to look up and
-  opens the corresponding NuVoc page in a browser.
 - *pretty symbols*: approximate J in APL glyphs through <kbd>M-p</kbd>
   and pretty symbol mode.
-- *calculator*: access J prompt in the mini bar through key binding
-  <kbd>M-j</kbd>
 
 * Warnings
-- J or your J can cause segfaults (wip)!
+- Using J in this way can cause segfaults (wip)!

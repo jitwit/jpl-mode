@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'jpl-module)
 (require 'jpl-font-lock)
+(require 'ob-jpl)
 (require 'pretty-mode)
 (require 'NuVoc)
 (require 'popup)
