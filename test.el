@@ -10,7 +10,8 @@
 
 (defun j-test-set (var val)
   (emacs->J WWJ var val)
-  (assert (equal val (J->emacs WWJ var))))
+  (cond ((listp val) (assert (equal (vconcat val) (J->emacs WWJ var))))
+	(t           (assert (equal val (J->emacs WWJ var))))))
 
 (defun simple-test ()
   (j-test-do/get "vb" "i. 3" '[0 1 2])
@@ -27,8 +28,10 @@
   (j-test-set "abc" '[0 1 2])
   (j-test-set "abc" '[0.1 1.2 2.3])
   (j-test-set "abc" '[])
+  (j-test-set "abc" nil)
+  (j-test-set "abc" '(1 2 3))
+;;   (j-test-set "abc" '(1 2.3 3)) why wrong argument type floatp ?
   (j-test-set "abc" 2)
   (j-test-set "abc" (* 2 (acos 0))))
 
 (simple-test)
-

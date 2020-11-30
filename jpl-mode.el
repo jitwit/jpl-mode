@@ -133,22 +133,31 @@ containing the `speech' or as a single sentence if `nil'."
   "Bring data in `variable' living inside `J' engine to emacs"
   (jval->eval (j-getm J variable)))
 
+(defun j-check-element-not-int (e)
+  (not (integerp e)))
+
+(defun j-check-element-not-float (e)
+  (not (or (integerp e) (floatp e))))
+
+(defun j-check-vector (type-bad? V)
+  (and (vectorp V) (not (seq-find type-bad? V))))
+
 (defun emacs->J (J variable value)
   "Bring data in `variable' living inside `emacs' the `J' engine"
   (cond
+   ((listp value)
+    (emacs->J J variable (vconcat value)))
    ((stringp value)
     (j-setm-string WWJ variable value))
-   ((and (vectorp value) (= 0 (length value)))
-    (j-setm-int-vector WWJ variable value))
-   ((and (vectorp value) (integerp (elt value 0)))
-    (j-setm-int-vector WWJ variable value))
    ((integerp value)
     (j-setm-int WWJ variable value))
-   ((and (vectorp value) (floatp (elt value 0)))
-    (j-setm-float-vector WWJ variable value))
    ((floatp value)
     (j-setm-float WWJ variable value))
-   (t (error "unhalded case in `emacs->J'" variable value))))
+   ((j-check-vector #'j-check-element-not-int value)
+    (j-setm-int-vector WWJ variable value))
+   ((j-check-vector #'j-check-element-not-float value)
+    (j-setm-float-vector WWJ variable value))
+   (t (error value))))
 
 (defun j-eval (J speech)
   (j-do J speech))
