@@ -47,4 +47,3 @@
   (assert (equal variable-defined-thru-J1 "ABCDE")))
 
 (simple-test)
-

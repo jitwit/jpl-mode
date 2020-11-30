@@ -159,11 +159,14 @@ containing the `speech' or as a single sentence if `nil'."
     (j-setm-float-vector WWJ variable value))
    (t (error value))))
 
+(defmacro J-set&get (speech)
+  `(progn
+     (j-eval WWJ (concat "emacstmp =: " ,speech))
+     (J->emacs WWJ "emacstmp")))
+
 (defmacro defj (variable speech &optional docstring)
   `(defvar ,variable
-     (progn
-       (j-eval WWJ (concat "emacstmp =: " ,speech))
-       (J->emacs WWJ "emacstmp"))
+     (J-set&get ,speech)
      ,docstring))
 
 (defun j-eval (J speech)
