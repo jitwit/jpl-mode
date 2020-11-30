@@ -66,4 +66,4 @@ SESSION is a parameter given by org-babel."
 
 (provide 'ob-jpl)
 
-;;; ob-J.el ends here
+;;; ob-jpl.el ends here

@@ -14,8 +14,8 @@ are many ways it sucks, so I'd caution others against using it.
 - *plot*: if the ~plot.pdf~ file changes from executing some J, the
   buffer is opened and viewed through ~pdf-tools~.
 - *ob-jpl*: facilities for using ~jpl-mode~ in org mode.
-- *joogle*: emacs procedure that promps for a J token to look up and
-  opens the corresponding NuVoc page in a browser.
+- *joogle*: emacs procedure that prompts for a J token and opens the
+  corresponding NuVoc page in a browser.
 - *font lock*: correctly classifies J tokens by verb, adverb,
   conjunction, and so on (j-mode misidentifies things like ~:~ and a
   few others) and adds a colors for nouns and names. Basically, with
