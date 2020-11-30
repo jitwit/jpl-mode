@@ -359,6 +359,8 @@ will be used unless the current buffer has its own."
 (j-create-instance "~")
 (setq comment-start "NB. "
       commend-end "")
+;;(defvar jget-error)
+(define-error 'jget-error "can't get variable from J")
 
 (defvar WWJ
   (cdr (assq 'engine (gethash "~" jpl-place->j)))

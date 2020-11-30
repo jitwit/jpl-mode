@@ -35,6 +35,12 @@
   ;; (j-test-set "abc" (mapc #'float '(1.9 2.3 3)))
   (j-test-set "abc" '(1.9 2.3 3.0))
   (j-test-set "abc" 2)
-  (j-test-set "abc" (* 2 (acos 0))))
+  (j-test-set "abc" (* 2 (acos 0)))
+  (assert (equal '(jget-error . "varne")
+		 (condition-case err
+		     (J->emacs WWJ "varne")
+		   (jget-error err))))
+  )
 
 (simple-test)
+

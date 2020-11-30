@@ -86,7 +86,10 @@ EFUN(jesetfs) // float scalar
 EFUN(jegetm)
 { J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);I jt,jr,js,jd;
   EV cons = e->intern(e,"cons");
-  jgetm(j,v,&jt,&jr,&js,&jd); I c=cardinality(jr,js);
+  if (0!=jgetm(j,v,&jt,&jr,&js,&jd))
+    { e->non_local_exit_signal(e,e->intern(e,"jget-error"),a[1]);
+      R e->make_integer(e,1); }
+  I c=cardinality(jr,js);
   if      (jt==1) a[1]=jcopyb(e,c,jd);
   else if (jt==2) a[1]=jcopys(e,c,jd);
   else if (jt==4) a[1]=jcopyi(e,c,jd);
