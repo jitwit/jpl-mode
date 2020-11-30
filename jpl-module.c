@@ -70,9 +70,12 @@ EFUN(jesetiv) // for now, assumes rank 1 int vector
   free(jl);free(jd); R e->make_integer(e,r); }
 EFUN(jesetis) // int scalar
 { J j=e->get_user_ptr(e,a[0]);C*var=estring(e,a[1]);EV val=a[2];
-  I jt=4,jr=0,*jd=malloc(sizeof(I)),*jl=malloc(sizeof(I));
-  *jd=e->extract_integer(e,val);*jl=0;
-  I r = jsetm(j,var,&jt,&jr,(I*)&jl,(I*)&jd); R e->make_integer(e,r); }
+  I jt=4,jr=0,*jl=NULL,*jd=malloc(sizeof(I));*jd=e->extract_integer(e,val);
+  I r = jsetm(j,var,&jt,&jr,(I*)&jl,(I*)&jd);free(jd);R e->make_integer(e,r); }
+EFUN(jesetfs) // float scalar
+{ J j=e->get_user_ptr(e,a[0]);C*var=estring(e,a[1]);EV val=a[2];
+  I jt=8,jr=0,*jl=NULL;D*jd=malloc(sizeof(D));*jd=e->extract_float(e,val);
+  I r = jsetm(j,var,&jt,&jr,(I*)&jl,(I*)&jd);free(jd);R e->make_integer(e,r); }
 EFUN(jesetfv) // for now, assumes rank 1 float vector
 { J j=e->get_user_ptr(e,a[0]);C*var=estring(e,a[1]);EV val=a[2];
   I jt=8,jr=1,*jl=malloc(sizeof(I));*jl=e->vec_size(e,val);
@@ -123,6 +126,9 @@ int emacs_module_init (ERT* rt)
 
   a[1] = e->make_function(e,3,3,jesetfv,"emacs float vector -> J value",NULL);
   a[0] = e->intern(e,"j-setm-float-vector"); e->funcall(e,fset,2,a);
+
+  a[1] = e->make_function(e,3,3,jesetfs,"emacs float scalar -> J value",NULL);
+  a[0] = e->intern(e,"j-setm-float"); e->funcall(e,fset,2,a);
 
   a[1] = e->make_function(e,2,2,jesmx,"Set J i/o ",NULL);
   a[0] = e->intern(e,"j-smx"); e->funcall(e,fset,2,a);

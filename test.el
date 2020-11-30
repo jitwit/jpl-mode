@@ -16,7 +16,9 @@
 	((integerp val)
 	 (j-setm-int WWJ var val))
 	((and (vectorp val) (floatp (elt val 0)))
-	 (j-setm-float-vector WWJ var val)))
+	 (j-setm-float-vector WWJ var val))
+	((floatp val)
+	 (j-setm-float WWJ var val)))
   (assert (equal val (J->emacs WWJ var))))
 
 (defun simple-test ()
@@ -34,6 +36,7 @@
   (j-test-set "abc" '[0 1 2])
   (j-test-set "abc" '[0.1 1.2 2.3])
   (j-test-set "abc" 2)
+  (j-test-set "abc" (* 2 (acos 0)))
   )
 
 (simple-test)
