@@ -36,9 +36,9 @@
   (j-test-set "abc" '(1.9 2.3 3.0))
   (j-test-set "abc" 2)
   (j-test-set "abc" (* 2 (acos 0)))
-  (assert (equal '(jget-error . "varne")
+  (assert (equal '(jget-error . "i_dont_exist")
 		 (condition-case err
-		     (J->emacs WWJ "varne")
+		     (J->emacs WWJ "i_dont_exist")
 		   (jget-error err))))
   )
 
