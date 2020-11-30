@@ -26,9 +26,9 @@
   (j-test-set "abc" "A⍉B")
   (j-test-set "abc" '[0 1 2])
   (j-test-set "abc" '[0.1 1.2 2.3])
+  (j-test-set "abc" '[])
   (j-test-set "abc" 2)
-  (j-test-set "abc" (* 2 (acos 0)))
-  )
+  (j-test-set "abc" (* 2 (acos 0))))
 
 (simple-test)
 
