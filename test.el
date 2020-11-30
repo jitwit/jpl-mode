@@ -10,11 +10,13 @@
 
 (defun j-test-set (var val)
   (cond ((stringp val)
-	 (j-setm-str WWJ var val))
+	 (j-setm-string WWJ var val))
 	((and (vectorp val) (integerp (elt val 0)))
+	 (j-setm-int-vector WWJ var val))
+	((integerp val)
 	 (j-setm-int WWJ var val))
 	((and (vectorp val) (floatp (elt val 0)))
-	 (j-setm-float WWJ var val)))
+	 (j-setm-float-vector WWJ var val)))
   (assert (equal val (J->emacs WWJ var))))
 
 (defun simple-test ()
@@ -31,6 +33,7 @@
   (j-test-set "abc" "A⍉B")
   (j-test-set "abc" '[0 1 2])
   (j-test-set "abc" '[0.1 1.2 2.3])
+  (j-test-set "abc" 2)
   )
 
 (simple-test)

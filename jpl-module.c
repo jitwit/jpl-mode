@@ -56,19 +56,24 @@ EFUN(jegetr)
 EFUN(jesmx)
 { J j=e->get_user_ptr(e,a[0]);C*o=estring(e,a[1]);freopen(o,"a",stdout);free(o);
   jsmx(j,jputs,NULL,NULL,NULL,2); R e->make_integer(e,0); }
-EFUN(jesetstr)
+EFUN(jesetss)
 { J j=e->get_user_ptr(e,a[0]);C*var=estring(e,a[1]);C*val=estring(e,a[2]);
   I jt=2,jr=1,*jl=malloc(sizeof(I));*jl=strlen(val);
   I r = jsetm(j,var,&jt,&jr,(I*)&jl,(I*)&val);
   free(jl); R e->make_integer(e,r); }
-EFUN(jesetint) // for now, assumes rank 1
+EFUN(jesetiv) // for now, assumes rank 1 int vector
 { J j=e->get_user_ptr(e,a[0]);C*var=estring(e,a[1]);EV val=a[2];
   I jt=4,jr=1,*jl=malloc(sizeof(I));*jl=e->vec_size(e,val);
   I *jd = malloc(sizeof(I)*(*jl));
   DO(*jl,jd[i]=e->extract_integer(e,e->vec_get(e,val,i)));
   I r = jsetm(j,var,&jt,&jr,(I*)&jl,(I*)&jd);
   free(jl);free(jd); R e->make_integer(e,r); }
-EFUN(jesetfloat) // for now, assumes rank 1
+EFUN(jesetis) // int scalar
+{ J j=e->get_user_ptr(e,a[0]);C*var=estring(e,a[1]);EV val=a[2];
+  I jt=4,jr=0,*jd=malloc(sizeof(I)),*jl=malloc(sizeof(I));
+  *jd=e->extract_integer(e,val);*jl=0;
+  I r = jsetm(j,var,&jt,&jr,(I*)&jl,(I*)&jd); R e->make_integer(e,r); }
+EFUN(jesetfv) // for now, assumes rank 1 float vector
 { J j=e->get_user_ptr(e,a[0]);C*var=estring(e,a[1]);EV val=a[2];
   I jt=8,jr=1,*jl=malloc(sizeof(I));*jl=e->vec_size(e,val);
   D *jd = malloc(sizeof(D)*(*jl));
@@ -107,14 +112,17 @@ int emacs_module_init (ERT* rt)
   a[1] = e->make_function(e,2,2,jegetm,"J value -> emacs value",NULL);
   a[0] = e->intern(e,"j-getm"); e->funcall(e,fset,2,a);
 
-  a[1] = e->make_function(e,3,3,jesetstr,"emacs string -> J value",NULL);
-  a[0] = e->intern(e,"j-setm-str"); e->funcall(e,fset,2,a);
+  a[1] = e->make_function(e,3,3,jesetss,"emacs string -> J value",NULL);
+  a[0] = e->intern(e,"j-setm-string"); e->funcall(e,fset,2,a);
 
-  a[1] = e->make_function(e,3,3,jesetint,"emacs int vector -> J value",NULL);
+  a[1] = e->make_function(e,3,3,jesetiv,"emacs int vector -> J value",NULL);
+  a[0] = e->intern(e,"j-setm-int-vector"); e->funcall(e,fset,2,a);
+
+  a[1] = e->make_function(e,3,3,jesetis,"emacs int scalar -> J value",NULL);
   a[0] = e->intern(e,"j-setm-int"); e->funcall(e,fset,2,a);
 
-  a[1] = e->make_function(e,3,3,jesetfloat,"emacs int vector -> J value",NULL);
-  a[0] = e->intern(e,"j-setm-float"); e->funcall(e,fset,2,a);
+  a[1] = e->make_function(e,3,3,jesetfv,"emacs float vector -> J value",NULL);
+  a[0] = e->intern(e,"j-setm-float-vector"); e->funcall(e,fset,2,a);
 
   a[1] = e->make_function(e,2,2,jesmx,"Set J i/o ",NULL);
   a[0] = e->intern(e,"j-smx"); e->funcall(e,fset,2,a);
