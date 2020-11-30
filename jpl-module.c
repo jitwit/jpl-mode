@@ -94,7 +94,10 @@ EFUN(jegetm)
   else if (jt==2) a[1]=jcopys(e,c,jd);
   else if (jt==4) a[1]=jcopyi(e,c,jd);
   else if (jt==8) a[1]=jcopyf(e,c,jd);
-  else            a[1]=e->intern(e,"nil"); // more cases to come?
+  else
+    { EV msg = e->make_string(e,"J type not implemented",22);
+      e->non_local_exit_signal(e,e->intern(e,"jget-error"),msg);
+      R e->make_integer(e,1); }
   a[0]=jcopyi(e,jr,js); R e->funcall(e,cons,2,a); }
 
 int emacs_module_init (ERT* rt)
