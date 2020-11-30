@@ -9,16 +9,7 @@
     (assert (equal result expecting) t)))
 
 (defun j-test-set (var val)
-  (cond ((stringp val)
-	 (j-setm-string WWJ var val))
-	((and (vectorp val) (integerp (elt val 0)))
-	 (j-setm-int-vector WWJ var val))
-	((integerp val)
-	 (j-setm-int WWJ var val))
-	((and (vectorp val) (floatp (elt val 0)))
-	 (j-setm-float-vector WWJ var val))
-	((floatp val)
-	 (j-setm-float WWJ var val)))
+  (emacs->J WWJ var val)
   (assert (equal val (J->emacs WWJ var))))
 
 (defun simple-test ()

@@ -84,7 +84,7 @@ EFUN(jesetfs) // float scalar
   I jt=8,jr=0,*jl=NULL;D*jd=malloc(sizeof(D));*jd=e->extract_float(e,val);
   I r = jsetm(j,var,&jt,&jr,(I*)&jl,(I*)&jd);free(jd);R e->make_integer(e,r); }
 
-EFUN(jegetm) // nasty mess for now
+EFUN(jegetm)
 { J j=e->get_user_ptr(e,a[0]);C*v=estring(e,a[1]);I jt,jr,js,jd;
   EV cons = e->intern(e,"cons");
   jgetm(j,v,&jt,&jr,&js,&jd); I c=cardinality(jr,js);
@@ -92,7 +92,7 @@ EFUN(jegetm) // nasty mess for now
   else if (jt==2) a[1]=jcopys(e,c,jd);
   else if (jt==4) a[1]=jcopyi(e,c,jd);
   else if (jt==8) a[1]=jcopyf(e,c,jd);
-  else            a[1]=e->intern(e,"nil"); // more cases to come
+  else            a[1]=e->intern(e,"nil"); // more cases to come?
   a[0]=jcopyi(e,jr,js); R e->funcall(e,cons,2,a); }
 
 int emacs_module_init (ERT* rt)
