@@ -8,9 +8,14 @@
   (let ((result (J->emacs WWJ var)))
     (assert (equal result expecting) t)))
 
-(defun j-test-set (var str)
-  (j-setm-str WWJ var str)
-  (assert (equal str (J->emacs WWJ var))))
+(defun j-test-set (var val)
+  (cond ((stringp val)
+	 (j-setm-str WWJ var val))
+	((and (vectorp val) (integerp (elt val 0)))
+	 (j-setm-int WWJ var val))
+	((and (vectorp val) (floatp (elt val 0)))
+	 (j-setm-float WWJ var val)))
+  (assert (equal val (J->emacs WWJ var))))
 
 (defun simple-test ()
   (j-test-do/get "vb" "i. 3" '[0 1 2])
@@ -24,6 +29,8 @@
   (j-test-set "abc" "")
   (j-test-set "abc" "ABcd.")
   (j-test-set "abc" "A⍉B")
+  (j-test-set "abc" '[0 1 2])
+  (j-test-set "abc" '[0.1 1.2 2.3])
   )
 
 (simple-test)
