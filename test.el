@@ -26,11 +26,14 @@
   (j-test-set "abc" "ABcd.")
   (j-test-set "abc" "A⍉B")
   (j-test-set "abc" '[0 1 2])
-  (j-test-set "abc" '[0.1 1.2 2.3])
+  (j-test-set "abc" '[0.1 1.2 2.0])
   (j-test-set "abc" '[])
   (j-test-set "abc" nil)
   (j-test-set "abc" '(1 2 3))
-;;   (j-test-set "abc" '(1 2.3 3)) why wrong argument type floatp ?
+  ;; why wrong argument type floatp ?
+  ;; happens whenever value can be repped as int... even this doesn't work:
+  ;; (j-test-set "abc" (mapc #'float '(1.9 2.3 3)))
+  (j-test-set "abc" '(1.9 2.3 3.0))
   (j-test-set "abc" 2)
   (j-test-set "abc" (* 2 (acos 0))))
 
