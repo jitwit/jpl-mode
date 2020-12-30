@@ -14,7 +14,7 @@
 	(t           (assert (equal val (J->emacs WWJ var))))))
 
 (defun simple-test ()
-  (j-test-do/get "vb" "i. 3" '[0 1 2])
+  (j-test-do/get "vb" "1 = i. 3" '[0 1 0])
   (j-test-do/get "vs" "a.{~65+i.26" "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
   (j-test-do/get "vi" "i. 2 2 2" '[[[0 1] [2 3]] [[4 5] [6 7]]])
   (j-test-do/get "fv" "0.1 + i. 4" '[0.1 1.1 2.1 3.1])
