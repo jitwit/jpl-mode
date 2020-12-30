@@ -211,6 +211,7 @@ will be used unless the current buffer has its own."
 	     (pop-to-buffer (cdr out))
 	     (goto-char (point-max))
 	     (insert (j-script engine sentences "0!:1"))
+	     (recenter -1 t)
 	     (when (window-system)
 	       (unless (equal vm0 (file-attributes j-viewmat-png))
 		 (j-viewmat))
