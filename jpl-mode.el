@@ -249,6 +249,14 @@ will be used unless the current buffer has its own."
   "Get the speech of a given J entity of the `j-nuvoc'"
   (cdadr entity))
 
+(defun j-nuvoc-description (entity)
+  "Get the description of a given J entity of the `j-nuvoc'"
+  (cadr (assoc 'description (cdr (assoc 'info entity)))))
+
+(defun j-nuvoc-url (entity)
+  "Get the description of a given J entity of the `j-nuvoc'"
+  (cadr (assoc 'url (cdr (assoc 'info entity)))))
+
 (defun j-find-thing (thing)
   "Find information about `thing' (exact match)"
   (interactive "sthing: ")
@@ -265,33 +273,18 @@ will be used unless the current buffer has its own."
 			    (j-nuvoc-speech entity)))
               j-nuvoc))
 
-(defun j-urls (speech)
-  "Look up urls related to a string of `speech' (exact match)"
-  (seq-map #'(lambda (info)
-               ;; guaranteed fields
-               (append (cdr (assoc 'description (cdr info)))
-                       (cdr (assoc 'url (cdr info)))))
-	   (apply 'append
-		  (seq-map #'(lambda (entity)
-			       (seq-filter #'(lambda (kv)
-					       (equal (car kv) 'info))
-					   (cdr entity)))
-			   (j-find-things speech)))))
-
-(defun j-names (speech)
-  "Look up english names for `speech'"
-  (seq-map #'car (j-urls speech)))
-
 (defun joogle (thing)
   "Present a popup with links to information about thing"
   (interactive "sJOOGLE: ")
-  (let ((urls (seq-map #'(lambda (url)
-                           (popup-make-item (seq-elt url 0)
+  (let ((urls (seq-map #'(lambda (entity)
+                           (popup-make-item (format "%s %s"
+						    (j-nuvoc-description entity)
+						    (j-nuvoc-speech entity))
 					    :value
-					    (seq-elt url 1)))
-                       (j-urls thing))))
+					    (j-nuvoc-url entity)))
+                       (j-find-things thing))))
     (if urls
-	(browse-url (popup-menu* urls))
+	(browse-url-generic (popup-menu* urls))
       (princ (format "JOOGLE: no matches for '%s'" thing)))))
 
 (defun j-docs ()
