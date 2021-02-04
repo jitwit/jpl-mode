@@ -4,7 +4,7 @@ jpathsep_z_=: '/'&(('\' I.@:= ])})
 bin =. BINPATH_z_ =. '/.guix-profile/bin',~home=. 2!:5'HOME'
 install=. home,'/.guix-profile/share/j'
 'addons system tools'=. install&, &.> '/addons';'/system';'/tools'
-user=. home,userx=. '/j902-user'
+user=. home,userx=. '/j903-user'
 'break config snap temp'=. user&, &.> '/break';'/config';'/snap';'/temp'
 ids=. ;:'addons bin break config home install snap system tools temp user'
 SystemFolders_j_=: ids,.jpathsep@".&.>ids

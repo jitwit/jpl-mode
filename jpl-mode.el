@@ -27,12 +27,12 @@
   :group 'jpl)
 
 (defcustom j-viewmat-png
-  "~/j902-user/temp/viewmat.png"
+  "~/j903-user/temp/viewmat.png"
   "viewmat file"
   :group 'jpl)
 
 (defcustom j-plot-pdf
-  "~/j902-user/temp/plot.pdf"
+  "~/j903-user/temp/plot.pdf"
   "viewmat file"
   :group 'jpl)
 
