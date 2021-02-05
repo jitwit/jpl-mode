@@ -28,17 +28,20 @@
 
 (defcustom j-viewmat-png
   "~/j903-user/temp/viewmat.png"
-  "viewmat file"
+  "file output by viewmat, typically located at jpath '~temp/viewmat.png',
+which depends on the version of J."
   :group 'jpl)
 
 (defcustom j-plot-pdf
   "~/j903-user/temp/plot.pdf"
-  "viewmat file"
+  "file output by plot, typically located at jpath '~temp/plot.pdf',
+which depends on the version of J."
   :group 'jpl)
 
 (defcustom j-docs-help-index
   "~/.guix-profile/share/j/addons/docs/help/index.htm"
-  "old documentation from the docs/help addon"
+  "old documentation from the docs/help addon, typically located
+at jpath '~addons/docs/help/index.htm'"
   :group 'jpl)
 
 (defvar j-viewmat-buffer
