@@ -595,12 +595,12 @@
        (info
          (valence monad)
          (rank "0")
-         (url "https://code.jsoftware.com/wiki/Vocabulary/bangco")
+         (url "https://code.jsoftware.com/wiki/Vocabulary/Foreigns")
          (description "Foreign (System Functions)"))
        (info
          (valence dyad)
          (rank "0 0")
-         (url "https://code.jsoftware.com/wiki/Vocabulary/bangco")
+         (url "https://code.jsoftware.com/wiki/Vocabulary/Foreigns")
          (description "Foreign (System Functions)")))
     (J (Adverb "/")
        (info
@@ -679,10 +679,18 @@
          (rank "_ _")
          (url "https://code.jsoftware.com/wiki/Vocabulary/squarelf#dyadic")
          (description "Left")))
+    (J (Conjunction "[.")
+       (info
+         (url "https://code.jsoftware.com/wiki/Vocabulary/squarelfdot")
+         (description "Lev")))
     (J (Verb "[:")
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/squarelfco")
          (description "Cap")))
+    (J (Adverb "]:")
+       (info
+         (url "https://code.jsoftware.com/wiki/Vocabulary/squarertco")
+         (description "Ident")))
     (J (Verb "]")
        (info
          (valence monad)
@@ -694,6 +702,10 @@
          (rank "_ _")
          (url "https://code.jsoftware.com/wiki/Vocabulary/squarert#dyadic")
          (description "Right")))
+    (J (Conjunction "].")
+       (info
+         (url "https://code.jsoftware.com/wiki/Vocabulary/squarertdot")
+         (description "Dex")))
     (J (Verb "{")
        (info
          (valence monad)
