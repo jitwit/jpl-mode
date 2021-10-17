@@ -270,22 +270,31 @@ will be used unless the current buffer has its own."
 (defun j-find-things (thing)
   "Find information about `thing' (fuzzy matches)"
   (interactive "sthing: ")
-  (seq-filter #'(lambda (entity)
-		  (seq-find #'(lambda (tok)
-				(s-contains? thing tok))
-			    (j-nuvoc-speech entity)))
-              j-nuvoc))
+  (seq-mapcat #'(lambda (infos)
+		  (let ((xs (seq-drop infos 2))
+			(x (seq-take infos 2)))
+		    (seq-map #'(lambda (e)
+				 `(,@x ,e))
+			     (seq-filter #'(lambda (entity)
+					     (eq 'info (car entity)))
+					 xs))))
+	      (seq-filter #'(lambda (entity)
+			      (seq-find #'(lambda (tok)
+					    (s-contains? thing tok))
+					(j-nuvoc-speech entity)))
+			  j-nuvoc)))
 
 (defun joogle (thing)
   "Present a popup with links to information about thing"
   (interactive "sJOOGLE: ")
   (let ((urls (seq-map #'(lambda (entity)
+			   ;; todo: include both monad/dyad
                            (popup-make-item (format "%s %s"
 						    (j-nuvoc-description entity)
 						    (j-nuvoc-speech entity))
 					    :value
 					    (j-nuvoc-url entity)))
-                       (j-find-things thing))))
+                       (j-find-things1 thing))))
     (if urls
 	(browse-url-generic (popup-menu* urls))
       (princ (format "JOOGLE: no matches for '%s'" thing)))))
@@ -342,6 +351,9 @@ will be used unless the current buffer has its own."
 
 ;;;; mode
 (defvar jpl-mode-keymap
+  ;; add C-q to quote for string? at line? in region?
+  ;; also unquote?
+  ;; after eval and getting data from J, erase name?
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c c") 'j-over-buffer)
     (define-key map (kbd "C-c b") 'j-over-below-point)
