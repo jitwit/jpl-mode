@@ -288,7 +288,6 @@ will be used unless the current buffer has its own."
   "Present a popup with links to information about thing"
   (interactive "sJOOGLE: ")
   (let ((urls (seq-map #'(lambda (entity)
-			   ;; todo: include both monad/dyad
                            (popup-make-item (format "%s %s"
 						    (j-nuvoc-description entity)
 						    (j-nuvoc-speech entity))
