@@ -10,7 +10,7 @@ jpl-module.so : jpl-module.c
 
 install :
 	mkdir -p $(out)
-	cp jpl.so $(out)
+	cp jpl-module.so $(out)
 
 clean :
 	rm -rf *~ *.so *.o
