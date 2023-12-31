@@ -27,13 +27,13 @@
   :group 'jpl)
 
 (defcustom j-viewmat-png
-  "~/j903-user/temp/viewmat.png"
+  "~/j904-user/temp/viewmat.png"
   "file output by viewmat, typically located at jpath '~temp/viewmat.png',
 which depends on the version of J."
   :group 'jpl)
 
 (defcustom j-plot-pdf
-  "~/j903-user/temp/plot.pdf"
+  "~/j904-user/temp/plot.pdf"
   "file output by plot, typically located at jpath '~temp/plot.pdf',
 which depends on the version of J."
   :group 'jpl)
