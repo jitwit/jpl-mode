@@ -37,7 +37,7 @@ This function is called by `org-babel-execute-src-block'."
 		 (if plot (cdr plot) nil)))
 	 (viewmat (let ((viewmat (assq :viewmat params)))
 		    (if viewmat (cdr viewmat) nil)))
-         (full-body (org-babel-expand-body:J body params processed-params))
+         (full-body (org-babel-expand-body:jpl body params processed-params))
 	 (J (org-babel-j-session session-id)))
     (cond (plot
 	   (j-getr J (concat "1!:44 '" default-directory "'"))
