@@ -293,7 +293,7 @@ will be used unless the current buffer has its own."
 						    (j-nuvoc-speech entity))
 					    :value
 					    (j-nuvoc-url entity)))
-                       (j-find-things1 thing))))
+                       (j-find-things thing))))
     (if urls
 	(browse-url-generic (popup-menu* urls))
       (princ (format "JOOGLE: no matches for '%s'" thing)))))
