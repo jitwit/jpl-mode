@@ -5,61 +5,82 @@
 
 ;;; hah maybe look to:
 ;;; https://filmschoolrejects.com/colors-jean-luc-godard/
+
+;; Verbs: Bright Blue (Light) -> Sky Blue (Dark)
 (defvar j-verb-face
   (defface j-verb-face
-    `((t (:foreground "#117EFF")))
-  "I."
-  :group 'jpl-font-lock))
+    '((((class color) (background light)) (:foreground "#117EFF"))
+      (((class color) (background dark))  (:foreground "#5CACFF")))
+    "I."
+    :group 'jpl-font-lock))
 
+;; Adverbs: Orange (Light) -> Soft Peach/Orange (Dark)
 (defvar j-adverb-face
   (defface j-adverb-face
-    `((t (:foreground "#FF9C55")))
-  "&"
-  :group 'jpl-font-lock))
+    '((((class color) (background light)) (:foreground "#FF9C55"))
+      (((class color) (background dark))  (:foreground "#FFF59D"))
+;      (((class color) (background dark))  (:foreground "#FFC285"))
+      )
+    "&"
+    :group 'jpl-font-lock))
 
+;; Conjunctions: Red/Pink (Light) -> Bright Salmon (Dark)
 (defvar j-conjunction-face
   (defface j-conjunction-face
-    `((t (:foreground "#FF1C5C")))
-  "^:"
-  :group 'jpl-font-lock))
+    '((((class color) (background light)) (:foreground "#FF1C5C"))
+      (((class color) (background dark))  (:foreground "#FF6B8B")))
+    "^:"
+    :group 'jpl-font-lock))
 
+;; Nouns: Deep Rose (Light) -> Soft Pink/Mauve (Dark)
 (defvar j-noun-face
   (defface j-noun-face
-    `((t (:foreground "#BF456E")))
-  "a."
-  :group 'jpl-font-lock))
+    '((((class color) (background light)) (:foreground "#BF456E"))
+      (((class color) (background dark))  (:foreground "#E085A3")))
+    "a."
+    :group 'jpl-font-lock))
 
+;; Is (Definitions): Deep Teal (Light) -> Mint/Aqua (Dark)
+;; This required the most drastic change, as #004839 is invisible on black.
 (defvar j-is-face
   (defface j-is-face
-    `((t (:foreground "#004839")))
-    ; "#2F789F"
-  "avg =. +/ % #"
-  :group 'jpl-font-lock))
+    '((((class color) (background light)) (:foreground "#004839"))
+      (((class color) (background dark))  (:foreground "#4DB6AC")))
+    "avg =. +/ % #"
+    :group 'jpl-font-lock))
 
+;; Copula: Gray (Light) -> Light Silver (Dark)
 (defvar j-copula-face
   (defface j-copula-face
-    `((t (:foreground "#808080")))
-  "=."
-  :group 'jpl-font-lock))
+    '((((class color) (background light)) (:foreground "#808080"))
+      (((class color) (background dark))  (:foreground "#B0B0B0")))
+    "=."
+    :group 'jpl-font-lock))
 
+;; Strings: Dark Blue-Gray (Light) -> Periwinkle/Lavender (Dark)
 (defvar j-string-face
-  (defface j-string-face ;; #14816F
-    `((t (:foreground "#424568"))) ;; "#484848" 47AC9A
+  (defface j-string-face
+    '((((class color) (background light)) (:foreground "#424568"))
+      (((class color) (background dark))  (:foreground "#9FA2C5")))
     "''''"
     :group 'jpl-font-lock))
 
+;; Control: Dark Gray (Light) -> Off-White/Platinum (Dark)
 (defvar j-control-face
   (defface j-control-face
-    `((t (:foreground "#484848"))) ; 21184E
+    '((((class color) (background light)) (:foreground "#484848"))
+      (((class color) (background dark))  (:foreground "#FFCDD2")))
     "whilst."
     :group 'jpl-font-lock))
 
+;; Atoms/Numbers: Deep Blue (Light) -> Bright Royal Blue (Dark)
 (defvar j-atom-face
   (defface j-atom-face
-    ;; "#FFAAFF" 13303B
-    `((t (:foreground "#10319B")))
+    '((((class color) (background light)) (:foreground "#10319B"))
+      (((class color) (background dark))  (:foreground "#D1EFFF")))
     "_1.2 2p1 3r2j1 ; 'bytes'"
     :group 'jpl-font-lock))
+
 
 ;    ("/\."      . ?⌿)    
 ;    ("@"        . ?⍛)
