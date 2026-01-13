@@ -10,7 +10,7 @@
 (defvar j-verb-face
   (defface j-verb-face
     '((((class color) (background light)) (:foreground "#117EFF"))
-      (((class color) (background dark))  (:foreground "#5CACFF")))
+      (((class color) (background dark))  (:foreground "#6EC6FF")))
     "I."
     :group 'jpl-font-lock))
 
@@ -18,9 +18,7 @@
 (defvar j-adverb-face
   (defface j-adverb-face
     '((((class color) (background light)) (:foreground "#FF9C55"))
-      (((class color) (background dark))  (:foreground "#FFF59D"))
-;      (((class color) (background dark))  (:foreground "#FFC285"))
-      )
+      (((class color) (background dark))  (:foreground "#FFF59D")))
     "&"
     :group 'jpl-font-lock))
 
@@ -28,7 +26,7 @@
 (defvar j-conjunction-face
   (defface j-conjunction-face
     '((((class color) (background light)) (:foreground "#FF1C5C"))
-      (((class color) (background dark))  (:foreground "#FF6B8B")))
+      (((class color) (background dark))  (:foreground "#FF5C7C")))
     "^:"
     :group 'jpl-font-lock))
 
@@ -36,7 +34,8 @@
 (defvar j-noun-face
   (defface j-noun-face
     '((((class color) (background light)) (:foreground "#BF456E"))
-      (((class color) (background dark))  (:foreground "#E085A3")))
+;;      (((class color) (background dark))  (:foreground "#E085A3"))
+      (((class color) (background dark))  (:foreground "#EC98BA")))
     "a."
     :group 'jpl-font-lock))
 
