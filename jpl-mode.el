@@ -228,7 +228,7 @@ will be used unless the current buffer has its own."
   (interactive)
   (let ((t0 (current-time)))
     (j-over-region (point-at-bol) (point-at-eol))
-    (princ (format "[jpl] dt : %fs"
+    (princ (format "[jpl] Δt : %fs"
 		   (float-time (time-subtract (current-time) t0))))))
 
 (defun j-over-below-point ()
@@ -236,7 +236,7 @@ will be used unless the current buffer has its own."
   (interactive)
   (let ((t0 (current-time)))
     (j-over-region (point) (point-max))
-    (princ (format "[jpl] dt : %fs"
+    (princ (format "[jpl] Δt : %fs"
 		   (float-time (time-subtract (current-time) t0))))))
 
 (defun j-over-buffer ()
@@ -244,7 +244,7 @@ will be used unless the current buffer has its own."
   (interactive)
   (let ((t0 (current-time)))
     (j-over-region (point-min) (point-max))
-    (princ (format "[jpl] dt : %fs"
+    (princ (format "[jpl] Δt : %fs"
 		   (float-time (time-subtract (current-time) t0))))))
 
 ;;;; documentation
