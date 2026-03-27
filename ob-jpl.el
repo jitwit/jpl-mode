@@ -20,7 +20,13 @@ PROCESSED-PARAMS isn't used yet."
 (defun org-babel-execute:jpl (body params)
   "Execute a block of J code BODY.
 PARAMS are given by org-babel.
-This function is called by `org-babel-execute-src-block'."
+This function is called by `org-babel-execute-src-block'.
+
+Example usage of plot/viewmat. At the beginning of a code block:
+#+begin_src J :session :exports both :results file :plot image.png
+will pull over the image from ~/jVERSION/temp/plot.pdf and embed it
+in the document.
+"
   (message "executing J source code block")
   (let* ((processed-params (org-babel-process-params params))
 	 ;; no session => global, session => file local, 
@@ -43,14 +49,12 @@ This function is called by `org-babel-execute-src-block'."
 	   (j-getr J (concat "1!:44 '" default-directory "'"))
 	   (j-script J body foreign-verb)
 	   (j-save-plot (concat default-directory plot))
-	   plot ;; (concat "[[file:" plot "]]")
-	   )
+	   plot)
 	  (viewmat
 	   (j-getr J (concat "1!:44 '" default-directory "'"))
 	   (j-script J body foreign-verb)
 	   (j-save-viewmat (concat default-directory viewmat))
-	   viewmat ;; (concat "[[file:" plot "]]")
-	   )
+	   viewmat)
 	  (t
 	   (j-getr J (concat "1!:44 '" default-directory "'"))
 	   (j-script J body foreign-verb)))))
