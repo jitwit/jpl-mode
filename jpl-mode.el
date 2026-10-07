@@ -332,15 +332,17 @@ will be used unless the current buffer has its own."
   "save the most recent `j-plot-pdf' as a png in the given
 `output-file'"
   (interactive)
-  (save-excursion
-    (cl-letf (((symbol-function 'read-file-name)
-	       (lambda (&rest args) output-file))
-	      ((symbol-function 'yes-or-no-p) (lambda (&rest args) t))
-              ((symbol-function 'y-or-n-p) (lambda (&rest args) t)))
-      (let ((b (find-file j-plot-pdf)))
-	(pdf-view-redisplay)
-	(image-save)
-	(kill-buffer b)))))
+  (if noninteractive
+      (call-process "convert" nil nil nil j-plot-pdf output-file)
+    (save-excursion
+      (cl-letf (((symbol-function 'read-file-name)
+		 (lambda (&rest args) output-file))
+		((symbol-function 'yes-or-no-p) (lambda (&rest args) t))
+		((symbol-function 'y-or-n-p) (lambda (&rest args) t)))
+	(let ((b (find-file j-plot-pdf)))
+	  (pdf-view-redisplay)
+	  (image-save)
+	  (kill-buffer b))))))
 
 (defun j-save-viewmat (output-file)
   "save the most recent `j-plot-pdf' as a png in the given
@@ -368,16 +370,20 @@ will be used unless the current buffer has its own."
 (define-derived-mode jpl-mode prog-mode "J"
   "Major mode for wielding J."
   :syntax-table j-syntax-table
-  (setq ; one day: font-lock-multiline t
-        font-lock-defaults j-font-locks
+;;   (setq-local syntax-propertize-function
+;;               (syntax-propertize-rules
+;;                ("\\<\\(N\\)B\\." (1 "<"))))
+  (setq-local comment-start "NB. "
+	      comment-end ""
+	      comment-start-skip "\\<NB\\.[ \t]*")
+  ;; one day: font-lock-multiline t
+  (setq font-lock-defaults j-font-locks
 	prettify-symbols-alist j->apl) ;; (pretty-add-keywords nil j->apl)
   (use-local-map jpl-mode-keymap))
 
 (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . jpl-mode))
 (global-set-key (kbd "M-j") 'j-over-mini)
 (j-create-instance "~")
-(setq comment-start "NB. "
-      commend-end "")
 (define-error 'jget-error "failed to get variable from J")
 
 (defvar WWJ
