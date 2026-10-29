@@ -332,20 +332,10 @@ will be used unless the current buffer has its own."
   "save the most recent `j-plot-pdf' as a png in the given
 `output-file'"
   (interactive)
-  (if noninteractive
-      (call-process "convert" nil nil nil j-plot-pdf output-file)
-    (save-excursion
-      (cl-letf (((symbol-function 'read-file-name)
-		 (lambda (&rest args) output-file))
-		((symbol-function 'yes-or-no-p) (lambda (&rest args) t))
-		((symbol-function 'y-or-n-p) (lambda (&rest args) t)))
-	(let ((b (find-file j-plot-pdf)))
-	  (pdf-view-redisplay)
-	  (image-save)
-	  (kill-buffer b))))))
+  (copy-file j-plot-pdf output-file t))
 
 (defun j-save-viewmat (output-file)
-  "save the most recent `j-plot-pdf' as a png in the given
+  "save the most recent `j-plot-viewmat' as a png in the given
 `output-file'"
   (interactive)
   (copy-file j-viewmat-png output-file t))
