@@ -43,6 +43,8 @@ in the document.
 		 (if plot (cdr plot) nil)))
 	 (viewmat (let ((viewmat (assq :viewmat params)))
 		    (if viewmat (cdr viewmat) nil)))
+	 (image (let ((image (assq :image params)))
+		    (if image (cdr image) nil)))
          (full-body (org-babel-expand-body:jpl body params processed-params))
 	 (J (org-babel-j-session session-id)))
     (cond (plot
@@ -55,6 +57,10 @@ in the document.
 	   (j-script J body foreign-verb)
 	   (j-save-viewmat (concat default-directory viewmat))
 	   viewmat)
+	  (image
+	   (j-getr J (concat "1!:44 '" default-directory "'"))
+	   (j-script J body foreign-verb)
+	   image)
 	  (t
 	   (j-getr J (concat "1!:44 '" default-directory "'"))
 	   (j-script J body foreign-verb)))))
