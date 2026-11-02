@@ -1,9 +1,20 @@
-
 Evaluate J through emacs dynamic modules and ~libj.so~.
 
 I wrote this for fun and because I was getting fed up with how j-mode
 and org-babel interact. The code right now is usable for me but there
 are many ways it sucks, so I'd caution others against using it.
+
+* Viewmat
+
+#+begin_src J :session :exports both :results file :viewmat images/sandpile.png
+NB. golfed abelian sandpiles
+A =: -[:+/@(-"2((,-)=/~i.2)|.!.0])3&<
+
+viewmat (A^:_) 12000*((>:*[:<.-:)N)=i.,~ N=:101
+#+end_src
+
+#+RESULTS:
+[[file:images/sandpile.png]]
 
 * Lowlights
 - *J->emacs* & *emacs->J*: marshall data between J and emacs.
@@ -27,16 +38,4 @@ are many ways it sucks, so I'd caution others against using it.
 
 * Warnings
 - Using J in this way can cause segfaults (wip)!
-
-* Viewmat
-
-#+begin_src jpl :session :exports both :results file :viewmat images/sandpile.png
-NB. golfed abelian sandpiles
-A =: -[:+/@(-"2((,-)=/~i.2)|.!.0])3&<
-
-viewmat (A^:_) 12000 (<50 50)} 101 101$0
-#+end_src
-
-#+RESULTS:
-[[file:images/sandpile.png]]
 
