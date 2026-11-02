@@ -14,6 +14,12 @@
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/eqdot")
          (description "Is (Local)")))
+    (J (Verb "c.")
+       (info
+	(valence dyad)
+	(rank "_ _")
+        (url "https://code.jsoftware.com/wiki/Vocabulary/cdot")
+        (description "Convert to Precision")))
     (J (Copula "=:")
        (info
          (url "https://code.jsoftware.com/wiki/Vocabulary/eqco")
