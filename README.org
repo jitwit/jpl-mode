@@ -1,8 +1,7 @@
 Evaluate J through emacs dynamic modules and ~libj.so~.
 
 I wrote this for fun and because I was getting fed up with how j-mode
-and org-babel interact. The code right now is usable for me but there
-are many ways it sucks, so I'd caution others against using it.
+and org-babel interact.
 
 #+begin_src J :session :exports both :results file :viewmat images/sandpile.png
 NB. golfed abelian sandpiles
@@ -13,6 +12,17 @@ viewmat (A^:_) 12000*((>:*[:<.-:)N)=i.,~ N=:101
 
 #+RESULTS:
 [[file:images/sandpile.png]]
+
+* Setup
+
+If you're adventurous or curious enough to try this out:
+
++ run make setting the appropriate variables ~j-bin~, ~include~, and
+  ~out~.
++ ensure you have the ~docs/help~ addon installed and customize the
+  ~j-docs-help-index~ variable to point to where to find the
+  ~addons/docs/help/index.htm~ file.
++ customize the ~j-profile-ijs~ variable to point to yours.
 
 * Lowlights
 - *J->emacs* & *emacs->J*: marshall data between J and emacs.
